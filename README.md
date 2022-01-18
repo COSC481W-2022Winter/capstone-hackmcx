@@ -1,20 +1,23 @@
-Team Name: HACKMCX
+# Team Name: HACKMCX
 
-Project Description:
+## Project Description:
 
-Project Name: BakaBook
+### Project Name: BakaBook
 
 An english version of the website bokete.jp which is a website where users 
 submit images and users write a joke, observation, or punchline relating to 
 the image. users rate each other's responses and a feed is created based on 
 popular responses.
 
-Meeting Time: Thursday 8:30 pm
+### Meeting Time: Thursday 8:30 pm
 
-Team Member Bios:
+## Team Member Bios:
 
-Ari Hassani - Team Lead
+**Ari Hassani - Team Lead**
 
 Senior CS student at EMU. Especially interested in software engineering and 
 database development. A gamer at heart. Love the outdoors (Disc golf, fishing, camping etc...).
 
+**Alec Campbell - Deputy**
+
+Super-senior CS student at EMU. Psuedo-intellectual, linguaphile, and board game enthusiast.
