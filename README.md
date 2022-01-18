@@ -21,3 +21,8 @@ database development. A gamer at heart. Love the outdoors (Disc golf, fishing, c
 **Alec Campbell - Deputy**
 
 Super-senior CS student at EMU. Psuedo-intellectual, linguaphile, and board game enthusiast.
+
+**Cyrus Khorrami - Team Member**
+
+Senior at EMU double majoring in Computer Science and Economics with a goal to become a software engineer. 
+I enjoy watching Tv shows and Movies as well as playing videogames and exercising.
