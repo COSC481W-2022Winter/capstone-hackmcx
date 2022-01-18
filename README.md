@@ -34,3 +34,7 @@ Senior at EMU with CS Major. Having experince with working in Agile from interns
 **Ehtesham Mohiuddin - Team Member**
 
 Computer Science Senior at EMU. Interested in web development. 
+
+**Wyatt Curtis - Team Member**
+
+Senior Computer Science student at EMU. Enjoy gaming and relaxing with pets and friends. 
