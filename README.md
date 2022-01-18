@@ -9,6 +9,8 @@ submit images and users write a joke, observation, or punchline relating to
 the image. users rate each other's responses and a feed is created based on 
 popular responses.
 
+Meeting Time: Thursday 8:30 pm
+
 Team Member Bios:
 
 Ari Hassani - Team Lead
