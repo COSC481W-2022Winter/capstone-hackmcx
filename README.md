@@ -26,3 +26,7 @@ Super-senior CS student at EMU. Psuedo-intellectual, linguaphile, and board game
 
 Senior at EMU double majoring in Computer Science and Economics with a goal to become a software engineer. 
 I enjoy watching Tv shows and Movies as well as playing videogames and exercising.
+
+**Zhaoyue Xu - Team Member**
+
+Senior at EMU with CS Major. Having experince with working in Agile from internships. Interested in gaming and anime.
