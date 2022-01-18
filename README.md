@@ -30,3 +30,7 @@ I enjoy watching Tv shows and Movies as well as playing videogames and exercisin
 **Zhaoyue Xu - Team Member**
 
 Senior at EMU with CS Major. Having experince with working in Agile from internships. Interested in gaming and anime.
+
+**Ehtesham Mohiuddin - Team Member**
+
+Computer Science Senior at EMU. Interested in web development. 
