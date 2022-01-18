@@ -38,3 +38,8 @@ Computer Science Senior at EMU. Interested in web development.
 **Wyatt Curtis - Team Member**
 
 Senior Computer Science student at EMU. Enjoy gaming and relaxing with pets and friends. 
+
+**Selwa Alsomairy - Team Member**
+
+Senior at Eastern Michigan University majoring in Computer Science with a minor in SAG. I would like to teach CS overseas once I graduate.
+I enjoy making art, watching tv, baking/cooking and learning new languages (:
