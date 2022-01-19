@@ -2,7 +2,7 @@
 
 ## Project Description:
 
-### Project Name: BakaBook
+### Project Name: Warai
 
 An english version of the website bokete.jp which is a website where users 
 submit images and users write a joke, observation, or punchline relating to 
