@@ -43,3 +43,7 @@ Senior Computer Science student at EMU. Enjoy gaming and relaxing with pets and 
 
 Senior at Eastern Michigan University majoring in Computer Science with a minor in SAG. I would like to teach CS overseas once I graduate.
 I enjoy making art, watching tv, baking/cooking and learning new languages (:
+
+**Connor S - Team Member**
+  EMU student hoping to graduate sometime in the next few years. I'm hoping to learn more about software project 
+  management through my experience in COSC 581.
