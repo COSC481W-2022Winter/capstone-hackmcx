@@ -6,6 +6,7 @@ export async function getExample(req, res){
             .then((response) => {
                 res.send(response)
             })
+        connection.release()
         }
     );
 }
