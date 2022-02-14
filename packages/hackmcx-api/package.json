@@ -1,0 +1,16 @@
+{
+  "name": "hackmcx-api",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start-api": "node ./src/index.js"
+  },
+  "dependencies": {
+    "dotenv": "^14.2.0",
+    "process": "^0.11.10",
+    "express": "^4.17.2",
+    "cors": "^2.8.5",
+    "mariadb": "^2.5.5"
+  }
+}
