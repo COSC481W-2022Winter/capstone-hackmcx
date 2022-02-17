@@ -23,11 +23,18 @@ export async function getPostById(req, res){
 }
 
 export async function postPost(req, res){
-    dbClient
-        .insert(req.body).into('posts')
-        .then(result => {
-            res.statusCode = 201
-            // TODO: Set location header... res.header('Location', req.)
-            res.send(result)
-        })
+    const imageURL = req.body.imageURL;
+    const regex = /(https?:\/\/.*\.(?:png|jpg|gif|svg))/i;
+    const isPicture = imageURL.match(regex)[0] === imageURL;
+    const emptyTitle = /^\s*$/.test(req.body.title);
+
+    if(isPicture && !emptyTitle) {
+        dbClient
+            .insert(req.body).into('posts')
+            .then(result => {
+                res.statusCode = 201
+                // TODO: Set location header... res.header('Location', req.)
+                res.send(result)
+            })
+    }
 }
