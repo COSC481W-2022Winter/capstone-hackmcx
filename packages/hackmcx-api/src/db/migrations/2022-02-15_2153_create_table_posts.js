@@ -1,6 +1,6 @@
 export function up(knex) {
     return knex.schema
-        .createTable('posts', function (table){
+        .createTableIfNotExists('posts', function (table){
             table.increments('id')
             table.string('title', 255).notNullable();
             table.string('imageUrl', 2048).notNullable();

@@ -20,7 +20,9 @@ if (process.argv[2])
         });
         dbClient.destroy().then()
     } else if (process.argv[2] === '--seed') {
-        // TODO: Call seed here.
+        await dbClient.seed.run({directory: dirname(fileURLToPath(import.meta.url))+'/db/seeds'}).then(_ => {
+            console.log("Seed data was applied.")
+        });
     }
 } else{
     app.listen(port, () => console.log(`'${process.env.NODE_ENV}' server  is running on port: '${port}'.`))
