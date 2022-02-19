@@ -1,11 +1,57 @@
-
+import TextField from '@material-ui/core/TextField';
+import ImageIcon from '@mui/icons-material/Image';
+import Button from '@material-ui/core/Button';
+import Grid from '@material-ui/core/Grid';
+import LinkIcon from '@mui/icons-material/Link';
 
 const CreatePost = () => {
-    return (
-        <div>
-            
-        </div>
-    );
+	return (
+		<div>
+			<br />
+			<br />
+			<br />
+			<br />
+			<br />
+			<br />
+			<br />
+			<br />
+			<Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
+				<br />
+				<br />
+				<br />
+				<br />
+				<Grid xs={8} item md={4}>
+					<LinkIcon />
+					<TextField
+						variant='filled'
+						color='primary'
+						type='url'
+						label='URL'></TextField>
+				</Grid>
+				<Grid xs={8} md={4}>
+					<ImageIcon />
+					<TextField
+						variant='filled'
+						color='secondary'
+						type='title'
+						label='Post Name'></TextField>
+				</Grid>
+				<br />
+				<br />
+				<br />
+				<br />
+				<br />
+				<br />
+				<br />
+				<br />
+				<Grid item xs={6} md={12}>
+					<Button size='medium' variant='contained' color='secondary'>
+						Create Post
+					</Button>
+				</Grid>
+			</Grid>
+		</div>
+	);
 };
 
 export default CreatePost;
