@@ -1,4 +1,4 @@
-export function up(knex) {
+function up (knex) {
     return knex.schema
         .createTable('posts', function (table){
             table.increments('id')
@@ -8,6 +8,11 @@ export function up(knex) {
         });
 }
 
-export function down(knex){
+function down(knex){
     return knex.schema.dropTable('posts')
+}
+
+module.exports = {
+    up,
+    down
 }

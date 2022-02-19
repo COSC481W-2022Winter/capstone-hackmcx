@@ -1,4 +1,4 @@
-export function seed(knex) {
+function seed(knex) {
     return knex('posts').then(_ =>
         knex('posts').insert([
             {
@@ -18,3 +18,5 @@ export function seed(knex) {
             }
         ]));
 }
+
+module.exports = { seed }
