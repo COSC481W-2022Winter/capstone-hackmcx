@@ -1,6 +1,9 @@
 # IDE Stuff
 .idea
 
+# dev.env
+dev.env
+
 # Node Stuff
 node_modules
 
