@@ -2,6 +2,7 @@ import logo from './logo.svg';
 import './App.css';
 import {useEffect, useState} from 'react';
 import axios from "axios";
+import LandingPage from './LandingPage';
 import CreatePost from './CreatePost';
 
 function App(){
@@ -13,7 +14,7 @@ function App(){
   }, [example])
   return (
     <div className="App">
-	<CreatePost/>
+      <LandingPage/>
       <header className="App-header">
         <img src={logo} className="App-logo" alt="logo" />
         <p>
