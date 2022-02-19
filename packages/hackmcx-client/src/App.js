@@ -2,7 +2,6 @@ import logo from './logo.svg';
 import './App.css';
 import {useEffect, useState} from 'react';
 import axios from "axios";
-import CreatePost from './CreatePost';
 
 function App(){
   const [example, setExample] = useState('-_-');
@@ -13,7 +12,6 @@ function App(){
   }, [example])
   return (
     <div className="App">
-      <CreatePost/>
       <header className="App-header">
         <img src={logo} className="App-logo" alt="logo" />
         <p>
