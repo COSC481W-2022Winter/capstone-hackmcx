@@ -16,7 +16,7 @@ const LandingPage = () => {
 	const [example, setExample] = useState('-_-');
 	useEffect(async () => {
 		await axios
-			.get('http://localhost:3003/example')
+			.get('http://localhost:3003/api/vi/posts')
 			.then((response) => {
 				setExample(response.data[0].CURRENT_TIMESTAMP);
 			})
