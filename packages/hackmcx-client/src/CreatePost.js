@@ -7,42 +7,26 @@ import axios from 'axios';
 import { useState } from 'react';
 
 const CreatePost = () => {
-	// const [example, setExample] = useState('-_-');
-	// useEffect(async () => {
-	// 	await axios
-	// 		.get('http://localhost:3003/api/vi/posts')
-	// 		.then((response) => {
-	// 			setExample(response.data[0].CURRENT_TIMESTAMP);
-	// 		})
-	// 		.catch((asny) => console.log(any));
-	// }, [example]);
-
-	const [state, setState] = useState(null);
-
 	const [myTitle, setmyTItle] = useState('');
 	const [myImageurl, setmyImageurl] = useState('');
 
 	function postRequest() {
-		const createPostText = { title: myTitle, imageUrl: myImageurl };
 		axios
-			.post('http://localhost:3003/api/v1/posts', createPostText)
-			.then((response) => this.setState(response.data[0].id))
-			.catch((error) => {
-				this.setState({ errorMessage: error.message });
-				console.error('There was an error!', error);
-			});
+			.post('http://localhost:3003/api/v1/posts', {
+				title: myTitle,
+				imageUrl: myImageurl,
+			})
+			.then(
+				(response) => {
+					alert('Post Succesfully Created!');
+					console.log(response);
+				},
+				(error) => {
+					alert('Error, post could not be Created!');
+					console.log(error);
+				}
+			);
 	}
-
-	// componentDidMount() {
-	// 	// POST request using axios with error handling
-	// 	const article = { title: 'React POST Request Example' };
-	// 	axios.post('https://reqres.in/invalid-url', article)
-	// 		.then(response => this.setState({ articleId: response.data.id }))
-	// 		.catch(error => {
-	// 			this.setState({ errorMessage: error.message });
-	// 			console.error('There was an error!', error);
-	// 		});
-	// }
 
 	return (
 		<div>
@@ -95,7 +79,6 @@ const CreatePost = () => {
 					</Button>
 				</Grid>
 			</Grid>
-			<p>State:{state}</p>
 		</div>
 	);
 };
