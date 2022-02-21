@@ -11,17 +11,8 @@ import { useNavigate } from 'react-router-dom';
 
 import { useEffect, useState } from 'react';
 import axios from 'axios';
-
+//http://localhost:3003/api/vi/posts
 const LandingPage = () => {
-	const [example, setExample] = useState('-_-');
-	useEffect(async () => {
-		await axios
-			.get('http://localhost:3003/example')
-			.then((response) => {
-				setExample(response.data[0].CURRENT_TIMESTAMP);
-			})
-			.catch((any) => console.log(any));
-	}, [example]);
 	let navigate = useNavigate();
 	return (
 		<div>
@@ -66,7 +57,7 @@ const LandingPage = () => {
 				</Toolbar>
 			</AppBar>
 			<h2>This is our Landing Page!</h2>
-			<p>{example}</p>
+			{/* <p>{example}</p> */}
 		</div>
 	);
 };
