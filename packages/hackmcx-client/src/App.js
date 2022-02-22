@@ -2,6 +2,7 @@ import logo from './logo.svg';
 import './App.css';
 import {useEffect, useState} from 'react';
 import axios from "axios";
+import PostPage from './PostPage';
 
 function App(){
   const [example, setExample] = useState('-_-');
@@ -11,15 +12,7 @@ function App(){
     }).catch((any) => console.log(any))
   }, [example])
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <p>{example}</p>
-      </header>
-    </div>
+    <PostPage />
   );
 }
 
