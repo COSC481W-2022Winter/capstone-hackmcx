@@ -1,10 +1,5 @@
 import React from 'react';
-import CircularProgress from '@mui/material/CircularProgress';
-import Card from '@mui/material/Card';
-import { CardActionArea } from '@mui/material';
-import { CardContent, CardMedia, Container, CssBaseline, Typography } from '@mui/material';
-import Grid from '@material-ui/core/Grid';
-
+import { Card, CardContent, CardMedia, CircularProgress, Container, Grid, Typography } from '@mui/material';
 
 
 class PostPage extends React.Component {
