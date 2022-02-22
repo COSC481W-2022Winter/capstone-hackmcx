@@ -40,7 +40,13 @@ const LandingPage = () => {
 							<Button variant='contained'>Search</Button>
 						</Grid>
 						<Grid xs={3}>
-							<Button variant='contained'>Create Post</Button>
+							<Button
+								variant='contained'
+								onClick={() => {
+									navigate('/CreatePost');
+								}}>
+								Create Post
+							</Button>
 						</Grid>
 					</Grid>
 				</Toolbar>
