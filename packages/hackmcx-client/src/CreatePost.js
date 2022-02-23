@@ -28,23 +28,20 @@ const CreatePost = () => {
 				}
 			);
 	}
-
+	const style = {
+		position: "relative",
+		top: "200px"
+	}
+		
 	return (
-		<div>
-			<br />
-			<br />
-			<br />
-			<br />
-			<br />
-			<br />
-			<br />
-			<br />
-			<Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
-				<br />
-				<br />
-				<br />
-				<br />
-				<Grid xs={8} item md={4}>
+		<div style={style}>
+			<Grid 
+				container
+				justifyContent="center"
+					alignItems="center"
+				spacing = {3}
+			>
+				<Grid item xs={8}>
 					<LinkIcon />
 					<TextField
 						variant='filled'
@@ -53,7 +50,7 @@ const CreatePost = () => {
 						label='URL'
 						onChange={(e) => setmyImageurl(e.target.value)}></TextField>
 				</Grid>
-				<Grid xs={8} md={4}>
+				<Grid item xs={8}>
 					<ImageIcon />
 					<TextField
 						variant='filled'
@@ -62,15 +59,7 @@ const CreatePost = () => {
 						label='Post Name'
 						onChange={(e) => setmyTItle(e.target.value)}></TextField>
 				</Grid>
-				<br />
-				<br />
-				<br />
-				<br />
-				<br />
-				<br />
-				<br />
-				<br />
-				<Grid item xs={6} md={12}>
+				<Grid item xs={6}>
 					<Button
 						size='medium'
 						variant='contained'

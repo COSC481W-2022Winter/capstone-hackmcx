@@ -6,6 +6,7 @@ import { IconButton } from '@mui/material';
 import Button from '@material-ui/core/Button';
 import Grid from '@material-ui/core/Grid';
 import { useNavigate } from 'react-router-dom';
+import PostPage from './PostPage';
 
 const LandingPage = () => {
 	let navigate = useNavigate();
@@ -55,7 +56,7 @@ const LandingPage = () => {
 			<br />
 			<br />
 			<br />
-			<h2>This is our Landing Page!</h2>
+			<PostPage />
 		</div>
 	);
 };

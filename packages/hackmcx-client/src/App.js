@@ -8,11 +8,11 @@ import PostPage from './PostPage';
 function App() {
 	return (
 		<div className='App'>
-                        <PostPage />
 			<Router>
 				<Routes>
-        <Route exact path='/' exact element={<LandingPage />} />
+          <Route exact path='/' exact element={<LandingPage />} />
 					<Route exact path='/CreatePost' exact element={<CreatePost />} />
+          <Route exact path='/PostPage' exact element={<PostPage />} />
 				</Routes>
 			</Router>
 		</div>
