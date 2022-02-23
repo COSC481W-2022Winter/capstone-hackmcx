@@ -52,10 +52,6 @@ const LandingPage = () => {
 					</Grid>
 				</Toolbar>
 			</AppBar>
-			<br />
-			<br />
-			<br />
-			<br />
 			<PostPage />
 		</div>
 	);
