@@ -1,22 +1,26 @@
 import './App.css';
-import { BrowserRouter as Router, Route, Routes, Link } from 'react-router-dom';
-import CreatePost from './CreatePost';
-import LandingPage from './LandingPage';
-import PostPage from './PostPage';
+import {Route, BrowserRouter, Routes} from 'react-router-dom';
+import CreatePost from './components/posts/CreatePost';
+import PostList from './components/posts/PostList';
+import AppNav from "./AppNav";
+import Grid from "@material-ui/core/Grid";
 
 
-function App() {
+export default function App() {
 	return (
-		<div className='App'>
-                        <PostPage />
-			<Router>
-				<Routes>
-        <Route exact path='/' exact element={<LandingPage />} />
-					<Route exact path='/CreatePost' exact element={<CreatePost />} />
-				</Routes>
-			</Router>
-		</div>
+		<Grid container direction="column" spacing={3}>
+			<BrowserRouter>
+				<Grid item xs={12}>
+					<AppNav/>
+				</Grid>
+					<Grid item xs={12}>
+						<Routes>
+							<Route exact path="/" element={<PostList/>}/>
+							<Route exact path="/posts/create" element={<CreatePost/>}/>
+						</Routes>
+					</Grid>
+			</BrowserRouter>
+		</Grid>
 	);
 }
 
-export default App;
