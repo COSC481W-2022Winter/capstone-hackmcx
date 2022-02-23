@@ -3,7 +3,7 @@ import AppBar from '@mui/material/AppBar'
 import Toolbar from '@mui/material/Toolbar';
 import {Link} from "react-router-dom";
 import Button from "@material-ui/core/Button";
-import {Avatar, Box, IconButton} from "@mui/material";
+import {Avatar, Box, IconButton, Typography} from "@mui/material";
 
 export default function AppNav(){
     return (
@@ -13,6 +13,7 @@ export default function AppNav(){
                     <Link to={"/"} color="inherit">
                         <IconButton size={"large"} sx={{ mr: 2 }}>
                             <Avatar src={'/imgs/logo.png'} />
+                            <Typography variant="h6" sx={{marginLeft: 2}}>Warai</Typography>
                         </IconButton>
                     </Link>
                     <Box sx={{ flexGrow: 1 }} />
