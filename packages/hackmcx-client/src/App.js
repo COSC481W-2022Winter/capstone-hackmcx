@@ -1,19 +1,22 @@
-import logo from './logo.svg';
 import './App.css';
-import {useEffect, useState} from 'react';
-import axios from "axios";
+import { BrowserRouter as Router, Route, Routes, Link } from 'react-router-dom';
+import CreatePost from './CreatePost';
+import LandingPage from './LandingPage';
 import PostPage from './PostPage';
 
-function App(){
-  const [example, setExample] = useState('-_-');
-  useEffect(async () => {
-    await axios.get('http://localhost:3003/example').then((response) => {
-      setExample(response.data[0].CURRENT_TIMESTAMP)
-    }).catch((any) => console.log(any))
-  }, [example])
-  return (
-    <PostPage />
-  );
+
+function App() {
+	return (
+		<div className='App'>
+                        <PostPage />
+			<Router>
+				<Routes>
+        <Route exact path='/' exact element={<LandingPage />} />
+					<Route exact path='/CreatePost' exact element={<CreatePost />} />
+				</Routes>
+			</Router>
+		</div>
+	);
 }
 
 export default App;
