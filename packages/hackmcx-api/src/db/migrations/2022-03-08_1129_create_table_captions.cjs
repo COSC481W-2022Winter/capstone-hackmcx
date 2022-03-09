@@ -5,7 +5,7 @@ function up (knex) {
             table.string('caption', 2048).notNullable();
             table.integer('post_id').unsigned().notNullable();
             table.foreign('post_id').references('id').inTable('posts').onDelete('cascade');
-            table.float('average_rating',2,1);
+            table.double('average_rating');
             table.integer('number_of_ratings');
             table.timestamp('createdAt');
         });
