@@ -1,9 +1,10 @@
 function up (knex) {
     return knex.schema
         .createTable('users', function (table){
-            table.string('username', 255).primary();
-            table.string('first_name', 255);
-            table.string('last_name', 255);
+            table.string('username', 255).primary().notNullable();
+            table.string('first_name', 255).notNullable();
+            table.string('last_name', 255).notNullable();
+            table.string('imageUrl', 2048).notNullable();
             table.boolean('disable').defaultTo(false);
             table.timestamp('createdAt')
         });
