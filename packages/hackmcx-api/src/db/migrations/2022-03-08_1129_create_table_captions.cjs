@@ -3,7 +3,7 @@ function up (knex) {
         .createTable('captions', function (table){
             table.increments('id');
             table.string('caption', 2048).notNullable();
-            table.integer('post_id').unsigned();
+            table.integer('post_id').unsigned().notNullable();
             table.foreign('post_id').references('id').inTable('posts').onDelete('cascade');
             table.float('average_rating',2,1);
             table.integer('number_of_ratings');

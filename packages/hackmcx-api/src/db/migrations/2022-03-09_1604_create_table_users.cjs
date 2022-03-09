@@ -4,6 +4,7 @@ function up (knex) {
             table.string('username', 255).primary();
             table.string('first_name', 255);
             table.string('last_name', 255);
+            table.boolean('disable').defaultTo(false);
             table.timestamp('createdAt')
         });
 }
