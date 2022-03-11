@@ -11,7 +11,7 @@ export async function getPostById(req, res){
     dbClient
         .select('title', 'imageUrl', 'createdAt', 'id')
         .from('posts')
-        .where('id', req.params.id)
+        .where('id', req.params.postId)
         .then(results => {
             if (results.length > 0)
                 res.send(results[0])

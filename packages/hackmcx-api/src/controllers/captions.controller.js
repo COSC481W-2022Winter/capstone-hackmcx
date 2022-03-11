@@ -4,7 +4,7 @@ export async function getCaptions(req, res){
     dbClient
         .select('caption', 'average_rating', 'createdAt', 'id')
         .from('captions')
-        .where('post_id', req.params.id)
+        .where('post_id', req.params.postId)
         .then(results => {
             if (results.length > 0)
                 res.send(results)
@@ -32,7 +32,6 @@ export async function postCaptions(req, res){
         res.send();
     }catch(e){
         res.statusCode = 404;
-        res.send({error: e})
+        res.send({ error: e })
     }
-    
 }
