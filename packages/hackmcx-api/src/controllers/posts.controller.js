@@ -26,8 +26,11 @@ export async function getPostById(req, res){
         .from('captions')
         .where('post_id', req.params.postId)
         .then(results => {
+            if (results.length > 0){
                 finalResults.captions = results;
-                res.send(finalResults)           
+                
+            }
+            res.send(finalResults) 
         })
 }
 
