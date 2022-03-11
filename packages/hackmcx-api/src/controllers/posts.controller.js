@@ -8,17 +8,26 @@ export async function getPosts(req, res){
 }
 
 export async function getPostById(req, res){
+    var finalResults
     dbClient
         .select('title', 'imageUrl', 'createdAt', 'id')
         .from('posts')
         .where('id', req.params.postId)
         .then(results => {
             if (results.length > 0)
-                res.send(results[0])
+                finalResults = results[0]
             else{
                 res.statusCode = 404
                 res.send()
             }
+        })
+    dbClient
+        .select('caption', 'average_rating', 'createdAt', 'id')
+        .from('captions')
+        .where('post_id', req.params.postId)
+        .then(results => {
+                finalResults.captions = results;
+                res.send(finalResults)           
         })
 }
 
