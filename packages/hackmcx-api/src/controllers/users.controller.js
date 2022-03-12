@@ -21,3 +21,50 @@ export async function getUsersByUserId(req, res){
             }
         })
 }
+
+export async function postUser(req, res){
+    const emptyUsername = !req.body.username || /^\s*$/.test(req.body.username);
+    const emptyFirstName = !req.body.firstname || /^\s*$/.test(req.body.firstname);
+    const emptyLastName = !req.body.lastname || /^\s*$/.test(req.body.lastname);    
+    const noGivenImageUrl = !req.body.imageUrl;
+    const notPicture = !req.body.imageUrl || !/(https?:\/\/.*\.(?:png|jpg|gif|svg))/i.test(req.body.imageUrl);
+
+    if(emptyUsername){
+        res.statusCode = 400;
+        res.send({error: "Username cannot be missing or blank."});
+        return
+    }
+    if(emptyFirstName){
+        res.statusCode = 400;
+        res.send({error: "First Name cannot be missing or blank."});
+        return
+    }
+    if(emptyLastName){
+        res.statusCode = 400;
+        res.send({error: "Last Name cannot be missing or blank."});
+        return
+    }
+    if(!noGivenImageUrl && notPicture){
+        res.statusCode = 400;
+        res.send({error: "Invalid image URL: Image url is invalid."});
+        return
+    }
+
+    try{
+        let id =  noGivenImageUrl ? 
+                    (await dbClient.table('users').insert({username: req.body.username, first_name: req.body.firstname, last_name: req.body.lastname }))[0] :
+                    (await dbClient.table('users').insert({username: req.body.username, first_name: req.body.firstname, last_name: req.body.lastname, imageUrl: req.body.imageUrl}))[0]
+        res.statusCode = 201;
+        res.header('Location',`${req.baseUrl}/${id}` );
+        res.send();
+    }catch(e){
+        if(e.message.includes('Duplicate entry')){
+            res.statusCode = 400;
+            res.send({error: "Invalid Username: Username is already taken."});
+        }
+        else{
+           res.statusCode = 500;
+           res.send();
+        }
+    }
+}
