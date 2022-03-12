@@ -58,7 +58,7 @@ export async function rateCaption(req, res){
     let results = await dbClient.select('average_rating', 'number_of_ratings')
         .from('captions')
         .where('id', req.params.captionId)
-        .and('post_id', req.params.postId)
+        .andWhere('post_id', req.params.postId)
     if (results.length < 1){
         res.statusCode = 404
         res.send('post or caption does not exist.')
@@ -66,9 +66,12 @@ export async function rateCaption(req, res){
     }
     let votes = results[0].number_of_ratings
     let score = results[0].average_rating
-    let newScore = (votes * score + rating) / votes+1
+    let newScore = (votes * score + rating) / (votes+1)
     await dbClient.table('captions')
         .where('id', req.params.captionId)
         .update({'average_rating': newScore, 'number_of_ratings': (votes + 1)})
+
+    res.statusCode = 204 //No Content
+    res.send()
 }
 
