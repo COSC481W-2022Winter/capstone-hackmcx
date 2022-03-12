@@ -4,5 +4,7 @@ import {getUsers, getUsersByUserId, postUser} from "../../controllers/users.cont
 export const router = new express.Router();
 
 router.get('/', getUsers)
-router.get('/:userId', getUsersByUserId)
 router.post('/', postUser)
+
+router.get('/:userId', getUsersByUserId)
+
