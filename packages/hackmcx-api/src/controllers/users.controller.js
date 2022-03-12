@@ -58,7 +58,13 @@ export async function postUser(req, res){
         res.header('Location',`${req.baseUrl}/${id}` );
         res.send();
     }catch(e){
-        res.statusCode = 400;
-        res.send({error: "Invalid Username: Username is already taken."});
+        if(e.message.includes('Duplicate entry')){
+            res.statusCode = 400;
+            res.send({error: "Invalid Username: Username is already taken."});
+        }
+        else{
+           res.statusCode = 500;
+           res.send();
+        }
     }
 }
