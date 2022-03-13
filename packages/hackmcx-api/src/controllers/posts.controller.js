@@ -1,10 +1,22 @@
 import {dbClient} from '../db/db.js'
 
 export async function getPosts(req, res){
+    var finalResults;
     await dbClient
-        .select('title', 'imageUrl', 'createdAt', 'id')
+        .select('title', 'imageUrl', 'posts.createdAt', 'posts.id', 'caption')
         .from('posts')
-        .then(results => res.send(results));
+        .leftOuterJoin('captions as c', function() {
+          this.on('posts.id', '=', 'post_id')
+          this.andOn('average_rating', '=', dbClient.raw('(select max(??) from ?? where ??=??)', ['average_rating', 'captions', 'post_id', 'c.post_id']))
+        })
+        .then(results => {finalResults = results})
+
+    finalResults.forEach(function (post, index) {
+        if (post.caption === null) {
+            delete finalResults[index].caption
+        }
+    })
+    res.send(finalResults)
 }
 
 export async function getPostById(req, res){
