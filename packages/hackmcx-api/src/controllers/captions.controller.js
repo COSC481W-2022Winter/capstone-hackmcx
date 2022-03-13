@@ -42,17 +42,18 @@ export async function rateCaption(req, res){
         res.send({error: message})
     }
 
-    if (!req.body.rating){
-        err('"rating" missing from request body. Rating must be a number from 0 to 1.')
+    if (!req.body.hasOwnProperty("rating")){
+        err('`rating` missing from request body.' +
+            ' must be a number from 0 to 1.')
         return;
     }
     let rating = parseFloat(req.body.rating);
-    if (rating.isNaN){
-        err('rating" Rating must be a number from 0 to 1.')
+    if (Number.isNaN(rating)){
+        err('`rating` must be a number from 0 to 1.')
         return;
     }
     if (rating > 1 || rating < 0){
-        err('"rating" Rating must be a number from 0 to 1.')
+        err('`rating` must be a number from 0 to 1.')
         return;
     }
     let results = await dbClient.select('average_rating', 'number_of_ratings')
