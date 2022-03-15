@@ -26,7 +26,7 @@ export async function postCaptions(req, res){
     }
 
     try{
-        let id = (await dbClient.table('captions').insert({caption: req.body.caption, post_id: req.params.id, average_rating: 0, number_of_ratings: 0}))[0];
+        let id = (await dbClient.table('captions').insert({caption: req.body.caption, post_id: req.params.postId, average_rating: 0, number_of_ratings: 0}))[0];
         res.statusCode = 201;
         res.header('Location',`${req.baseUrl}/${id}` );
         res.send();
