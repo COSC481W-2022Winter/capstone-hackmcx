@@ -10,24 +10,60 @@ import {Box, FormControl} from "@mui/material";
 const CreatePost = () => {
 	const [title, setTitle] = useState('');
 	const [imageUrl, setImageUrl] = useState('');
+	const [imageUrlError, setImageUrlError] = useState(false);
+	const [titleError, setTitleError] = useState(false);
+
+	/*
+	function validateURL() {
+		//return (imageUrl.match(/^http[^\?]*.(jpg|jpeg|gif|png|tiff|bmp)(\?(.*))?$/gmi) !== null);
+		var image = new Image();
+		image.onload = function() {
+			if (this.width > 0) {
+				return true;
+			}
+		}
+		image.onerror = function() {
+			return false;
+		}
+		image.src = imageUrl;
+	} */
 
 	//When the create post button is clicked, this function will be called.
 	function postRequest() {
-		axios
-			.post(`${process.env.REACT_APP_API_URL}/api/v1/posts`, {
-				title: title,
-				imageUrl: imageUrl,
-			})
-			.then(
-				(response) => {
-					alert('Post Succesfully Created!');
-					console.log(response);
-				},
-				(error) => {
-					alert('Error, post could not be Created!');
-					console.log(error);
-				}
-			);
+		if (title === '' || imageUrl === '') {
+			if(title === '' && imageUrl === '') {
+				alert('Enter a title and valid image before submitting');
+				setImageUrlError(true); setTitleError(true);
+			} else if (imageUrl === '') {
+				alert('Enter a valid image before submitting');
+				setImageUrlError(true);
+			} else {
+				alert('Enter a title before submitting');
+				setTitleError(true);
+			}
+		} /*
+		else if (validateURL()) {
+			alert('Image URL is not a valid')
+			setImageUrlError(true)
+		} */ else {
+			axios
+				.post(`${process.env.REACT_APP_API_URL}/api/v1/posts`, {
+					title: title,
+					imageUrl: imageUrl,
+				})
+				.then(
+					(response) => {
+						alert('Post Succesfully Created!');
+						console.log(response);
+						setImageUrlError(false); 
+						setTitleError(false);
+					},
+					(error) => {
+						alert('Error, post could not be Created!');
+						console.log(error);
+					}
+				);
+			}
 	}
 
 	return (
@@ -39,6 +75,7 @@ const CreatePost = () => {
 					</Grid>
 					<Grid item xs={11}>
 						<TextField
+							error={titleError}
 							fullWidth
 							variant='filled'
 							color='primary'
@@ -56,6 +93,7 @@ const CreatePost = () => {
 					</Grid>
 					<Grid item xs={11}>
 						<TextField
+							error={imageUrlError}
 							fullWidth
 							variant='filled'
 							color='primary'
