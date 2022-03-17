@@ -4,6 +4,7 @@ import CreatePost from './components/posts/CreatePost';
 import PostList from './components/posts/PostList';
 import AppNav from "./AppNav";
 import Grid from "@material-ui/core/Grid";
+import UserProfile from './components/UserProfile';
 
 
 export default function App() {
@@ -17,6 +18,7 @@ export default function App() {
 						<Routes>
 							<Route exact path="/" element={<PostList/>}/>
 							<Route exact path="/posts/create" element={<CreatePost/>}/>
+							<Route exact path="/user/:id" element={<UserProfile/>}/>
 						</Routes>
 					</Grid>
 			</BrowserRouter>
