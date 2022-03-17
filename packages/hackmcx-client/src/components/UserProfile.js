@@ -1,7 +1,17 @@
 import React from "react";
+import { useParams } from 'react-router-dom'
 import { CircularProgress } from "@material-ui/core";
 
-class UserProfile extends React.Component {
+function UserId(Component) {
+    return function WrappedComponent(props) {
+      const {userId} = useParams();
+      return <Component {...props} userId={userId} />;
+    }
+  }
+
+
+  class UserProfile extends React.Component {
+
 
     state = {
         isLoaded: false,
@@ -11,7 +21,7 @@ class UserProfile extends React.Component {
     }
     
     componentDidMount() {
-        fetch(`${process.env.REACT_APP_API_URL}/api/v1/users/username1`)
+        fetch(`${process.env.REACT_APP_API_URL}/api/v1/users/${this.props.userId}`)
             .then( res => res.json())
             .then(
                 (result) => {
@@ -41,7 +51,7 @@ class UserProfile extends React.Component {
         else {
             return (
                 <div>
-                    User Page {user.username} {user.first_name} {user.last_name} 
+                    User Page:  {user.username} {user.first_name} {user.last_name} 
                 </div>
             );
         }
@@ -49,4 +59,4 @@ class UserProfile extends React.Component {
 
 }
 
-export default UserProfile;
+export default UserId(UserProfile);

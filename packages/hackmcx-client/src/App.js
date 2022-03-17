@@ -18,7 +18,7 @@ export default function App() {
 						<Routes>
 							<Route exact path="/" element={<PostList/>}/>
 							<Route exact path="/posts/create" element={<CreatePost/>}/>
-							<Route exact path="/user/:id" element={<UserProfile/>}/>
+							<Route exact path="/user/:userId" element={<UserProfile/>}/>
 						</Routes>
 					</Grid>
 			</BrowserRouter>
