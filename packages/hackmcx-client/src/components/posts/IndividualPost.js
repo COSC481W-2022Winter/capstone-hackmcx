@@ -2,6 +2,13 @@ import React from 'react'
 import { Container, Card, Grid, Typography, CardMedia, CardContent, CircularProgress } from '@mui/material';
 import { useParams } from 'react-router-dom';
 
+function getPostId(Component) {
+  return function WrappedComponent(props) {
+    const {postId} = useParams();
+    return <Component {...props} postId={postId} />;
+  }
+}
+
 class IndividualPost extends React.Component {
 
   state = {
@@ -11,7 +18,7 @@ class IndividualPost extends React.Component {
   }
 
   componentDidMount() {
-    fetch(`${process.env.REACT_APP_API_URL}/api/v1/posts/1`)
+    fetch(`${process.env.REACT_APP_API_URL}/api/v1/posts/${this.props.postId}`)
         .then( res => res.json())
         .then(
             (result) => {
@@ -67,11 +74,10 @@ class IndividualPost extends React.Component {
                     </Grid>
                   </Grid>
             </Container>
-            Hello 
           </div>
       );
     }
   }
 }
 
-export default IndividualPost;
+export default getPostId(IndividualPost);
