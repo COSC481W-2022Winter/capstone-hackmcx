@@ -66,7 +66,7 @@ class IndividualPost extends React.Component {
                       justifyContent="center"
                       alignItems="center"
                   >
-                    <Grid item /*Post Component */>
+                    <Grid item xs={4} /*Post Component */>
                       <Card height='100%' display='flex' flexDirection='column'>
                         <a href={'/individualPost/' + post.id}>
                           <CardMedia
@@ -85,7 +85,7 @@ class IndividualPost extends React.Component {
                   </Grid>
                   {captions.map((caption) => (
                     <Grid container spacing={3} justifyContent="center" alignItems="center">
-                      <Grid item /*Captions*/>
+                      <Grid item xs={2} alignContent="center" /*Captions*/>
                         <Typography variant='h5' gutterBottom>
                           {caption.caption} {caption.average_rating}
                         </Typography>
