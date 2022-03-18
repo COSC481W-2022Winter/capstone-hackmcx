@@ -14,7 +14,8 @@ class IndividualPost extends React.Component {
   state = {
     isLoaded: false,
     post: null,
-    error: null,
+    captions: [],
+    error: null
   }
 
   componentDidMount() {
@@ -34,6 +35,16 @@ class IndividualPost extends React.Component {
               });
             }
         )
+    fetch(`${process.env.REACT_APP_API_URL}/api/v1/posts/${this.props.postId}/captions`)
+      .then( res => res.json())
+      .then(
+          (result) => {
+            this.setState({
+              isLoaded: true,
+              captions: result
+           });
+          }
+      )
   }
 
   render() {
@@ -41,7 +52,7 @@ class IndividualPost extends React.Component {
       position: "relative",
       top: "50px"
     }
-    const { error, isLoaded, post } = this.state;
+    const { error, isLoaded, post, captions } = this.state;
 
     if (error) return <div>{error.message}</div>;
     else if (!isLoaded) return <CircularProgress />;
@@ -49,7 +60,6 @@ class IndividualPost extends React.Component {
       return (
           <div style = {style}>
             <Container>
-              
                   <Grid
                       container
                       spacing={5}
@@ -57,7 +67,7 @@ class IndividualPost extends React.Component {
                       alignItems="center"
                   >
                     <Grid item /*Post Component */>
-                      <Card height='100%' display='flex' flexDirection='column' sx={{width: '535px', margin: '15px'}}>
+                      <Card height='100%' display='flex' flexDirection='column'>
                         <a href={'/individualPost/' + post.id}>
                           <CardMedia
                               component="img"
@@ -73,6 +83,15 @@ class IndividualPost extends React.Component {
                       </Card>
                     </Grid>
                   </Grid>
+                  {captions.map((caption) => (
+                    <Grid container spacing={3} justifyContent="center" alignItems="center">
+                      <Grid item /*Captions*/>
+                        <Typography variant='h5' gutterBottom>
+                          {caption.caption} {caption.average_rating}
+                        </Typography>
+                      </Grid>
+                    </Grid>
+                  ))}
             </Container>
           </div>
       );
