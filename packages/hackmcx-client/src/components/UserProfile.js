@@ -1,6 +1,8 @@
 import React from "react";
 import { useParams } from 'react-router-dom'
-import { CircularProgress } from "@material-ui/core";
+import { CircularProgress, Grid } from "@mui/material";
+import { Box } from "@mui/material";
+import { Typography } from "@mui/material";
 
 function UserId(Component) {
     return function WrappedComponent(props) {
@@ -9,10 +11,7 @@ function UserId(Component) {
     }
   }
 
-
   class UserProfile extends React.Component {
-
-
     state = {
         isLoaded: false,
         user: null,
@@ -42,7 +41,8 @@ function UserId(Component) {
     render() {
         const style = {
             position: "relative",
-            top: "50px"
+            top: "50px",
+            padding: '5%'
         }
         const { error, isLoaded, user, posts } = this.state;
       
@@ -50,8 +50,25 @@ function UserId(Component) {
         else if (!isLoaded) return <CircularProgress />;
         else {
             return (
-                <div>
-                    User Page:  {user.username} {user.first_name} {user.last_name} 
+                <div style={style}>
+                  <Box sx={{flexGrow: 1}}>
+                    <Grid container spacing={2} direction="column" >
+                      <Box display="flex" justifyContent="flex-end">
+                       <Grid item xs ='auto'>
+                          <Typography gutterBottom variant='h5' component="div" textAlign='center'>
+                            {user.username}
+                          </Typography>
+                        </Grid>
+                      </Box>
+                      <Box display="flex" justifyContent="flex-end">
+                        <Grid item xs ='auto' spacing={2}>
+                          <Typography gutterBottom variant='h5' component="div" textAlign='center'>
+                            {user.first_name} {user.last_name}
+                          </Typography>
+                        </Grid>
+                      </Box>
+                    </Grid>
+                  </Box>
                 </div>
             );
         }
