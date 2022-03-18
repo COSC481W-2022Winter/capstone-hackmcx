@@ -52,7 +52,7 @@ class PostList extends React.Component {
                   >
                     <Grid item /*Post Component */>
                       <Card height='100%' display='flex' flexDirection='column' sx={{width: '535px', margin: '15px'}}>
-                        <a href={post.id}>
+                        <a href={'individualPost/' + post.id}>
                           <CardMedia
                               component="img"
                               paddingTop='56.25%'
