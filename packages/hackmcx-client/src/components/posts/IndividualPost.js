@@ -15,7 +15,8 @@ class IndividualPost extends React.Component {
     isLoaded: false,
     post: null,
     captions: [],
-    error: null
+    error: null,
+    captionsError: ''
   }
 
   componentDidMount() {
@@ -36,15 +37,31 @@ class IndividualPost extends React.Component {
             }
         )
     fetch(`${process.env.REACT_APP_API_URL}/api/v1/posts/${this.props.postId}/captions`)
-      .then( res => res.json())
-      .then(
-          (result) => {
-            this.setState({
-              isLoaded: true,
-              captions: result
-           });
-          }
-      )
+      .then( res => {
+        if (res.status === 404) {
+          this.state.captionsError = 'No captions on this post'
+        } else {
+          res.json()
+          .then(
+            (result) => {
+              if(result === null) {
+                alert("null result")
+              } else {
+                this.setState({
+                  isLoaded: true,
+                  captions: result
+               });
+              }
+            },
+            (error) => {
+              this.setState({
+                isLoaded: true,
+                error
+              });
+            }
+        )
+        }
+      }) 
   }
 
   render() {
@@ -52,7 +69,7 @@ class IndividualPost extends React.Component {
       position: "relative",
       top: "50px"
     }
-    const { error, isLoaded, post, captions } = this.state;
+    const { error, isLoaded, post, captions, captionsError } = this.state;
 
     if (error) return <div>{error.message}</div>;
     else if (!isLoaded) return <CircularProgress />;
@@ -60,12 +77,8 @@ class IndividualPost extends React.Component {
       return (
           <div style = {style}>
             <Container>
-                  <Grid
-                      container
-                      spacing={5}
-                      justifyContent="center"
-                      alignItems="center"
-                  >
+              <Grid container>
+                  <Grid container spacing={5} justifyContent="center" alignItems="center">
                     <Grid item xs={4} /*Post Component */>
                       <Card height='100%' display='flex' flexDirection='column'>
                         <a href={'/individualPost/' + post.id}>
@@ -76,7 +89,7 @@ class IndividualPost extends React.Component {
                               alt={post.title}/>
                         </a>
                         <CardContent flexGrow='1'>
-                          <Typography gutterBottom variant='h5' component="div">
+                          <Typography gutterBottom variant='h5' component="div" textAlign='center'>
                             {post.title}
                           </Typography>
                         </CardContent>
@@ -84,7 +97,7 @@ class IndividualPost extends React.Component {
                     </Grid>
                   </Grid>
                   {captions.map((caption) => (
-                    <Grid container spacing={3} justifyContent="center" alignItems="center">
+                    <Grid container spacing={4} justifyContent="center" alignItems="center">
                       <Grid item xs={2} alignContent="center" /*Captions*/>
                         <Typography variant='h5' gutterBottom>
                           {caption.caption} {caption.average_rating}
@@ -92,6 +105,12 @@ class IndividualPost extends React.Component {
                       </Grid>
                     </Grid>
                   ))}
+                  <Grid container>
+                    <Typography variant='h6' xs={5} flexGrow={1} textAlign='center'>
+                      {captionsError}
+                    </Typography>
+                  </Grid>
+                  </Grid>
             </Container>
           </div>
       );
