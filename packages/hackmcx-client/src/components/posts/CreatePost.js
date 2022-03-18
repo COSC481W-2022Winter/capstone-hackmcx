@@ -5,7 +5,6 @@ import Grid from '@material-ui/core/Grid';
 import LinkIcon from '@mui/icons-material/Link';
 import axios from 'axios';
 import { useState } from 'react';
-import {Box, FormControl} from "@mui/material";
 
 const CreatePost = () => {
 	const [title, setTitle] = useState('');
@@ -13,39 +12,32 @@ const CreatePost = () => {
 	const [imageUrlError, setImageUrlError] = useState(false);
 	const [titleError, setTitleError] = useState(false);
 
-	/*
+	
 	function validateURL() {
-		//return (imageUrl.match(/^http[^\?]*.(jpg|jpeg|gif|png|tiff|bmp)(\?(.*))?$/gmi) !== null);
-		var image = new Image();
-		image.onload = function() {
-			if (this.width > 0) {
-				return true;
-			}
-		}
-		image.onerror = function() {
-			return false;
-		}
-		image.src = imageUrl;
-	} */
+		const image = !/(https?:\/\/.*\.(?:png|jpg|gif|svg))/i.test(imageUrl);
+		return (image); 
+	} 
 
 	//When the create post button is clicked, this function will be called.
 	function postRequest() {
-		if (title === '' || imageUrl === '') {
+		if (title === '' || imageUrl === '' || validateURL()) {
 			if(title === '' && imageUrl === '') {
 				alert('Enter a title and valid image before submitting');
 				setImageUrlError(true); setTitleError(true);
-			} else if (imageUrl === '') {
-				alert('Enter a valid image before submitting');
-				setImageUrlError(true);
-			} else {
+			}
+			else if (title === '') {
 				alert('Enter a title before submitting');
 				setTitleError(true);
+			} 
+			else if (imageUrl === '') {
+				alert('Enter a valid image before submitting');
+				setImageUrlError(true);
+			} 
+			if (validateURL() && imageUrl !== '') {
+				alert('Image URL is not a valid URL')
+				setImageUrlError(true)
 			}
-		} /*
-		else if (validateURL()) {
-			alert('Image URL is not a valid')
-			setImageUrlError(true)
-		} */ else {
+		} else {
 			axios
 				.post(`${process.env.REACT_APP_API_URL}/api/v1/posts`, {
 					title: title,
