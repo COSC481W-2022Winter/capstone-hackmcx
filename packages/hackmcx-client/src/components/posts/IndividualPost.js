@@ -77,7 +77,7 @@ class IndividualPost extends React.Component {
       return (
           <div style = {style}>
             <Container>
-              <Grid container>
+              <Grid container spacing={5} alignItems='center' justifyContent={'center'}>
                   <Grid container spacing={5} justifyContent="center" alignItems="center">
                     <Grid item xs={4} /*Post Component */>
                       <Card height='100%' display='flex' flexDirection='column'>
@@ -105,8 +105,8 @@ class IndividualPost extends React.Component {
                       </Grid>
                     </Grid>
                   ))}
-                  <Grid container>
-                    <Typography variant='h6' xs={5} flexGrow={1} textAlign='center'>
+                  <Grid item>
+                    <Typography variant='h4' xs={5} flexGrow={1} textAlign='center' style={{color:"grey"}}>
                       {captionsError}
                     </Typography>
                   </Grid>
