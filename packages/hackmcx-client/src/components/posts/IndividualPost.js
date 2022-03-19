@@ -1,3 +1,4 @@
+import * as React from 'react';
 import {
 	Container,
 	Card,
@@ -10,10 +11,10 @@ import {
 	Rating,
 } from '@mui/material';
 import { useParams } from 'react-router-dom';
-import * as React from 'react';
 import Box from '@mui/material/Box';
 import StarIcon from '@mui/icons-material/Star';
 import axios from 'axios';
+import CreateCaption from './captions/CaptionCreation'; //added
 
 const labels = {
 	0.5: '💩',
@@ -44,6 +45,7 @@ class IndividualPost extends React.Component {
 		captionsError: '',
 		value: '',
 		rated: false,
+		showCreateComponent: false,
 		hover: -1,
 	};
 
@@ -63,6 +65,13 @@ class IndividualPost extends React.Component {
 		this.setState({
 			rated: newRated,
 		});
+	}
+
+	setShowCreateComponent() {
+		this.setState({
+			showCreateComponent: !this.state.showCreateComponent,
+		});
+		//alert(this.props.postId)
 	}
 
 	componentDidMount() {
@@ -170,6 +179,14 @@ class IndividualPost extends React.Component {
 												textAlign='center'>
 												{post.title}
 											</Typography>
+											<Button
+												onClick={() => this.setShowCreateComponent()}
+												variant='contained'
+												color='primary'
+												sx={{ mt: 2 }}>
+												Create Caption
+											</Button>
+											{this.state.showCreateComponent && <CreateCaption />}
 										</CardContent>
 									</Card>
 								</Grid>
@@ -182,7 +199,7 @@ class IndividualPost extends React.Component {
 									alignItems='center'>
 									<Grid item xs={2} alignContent='center'>
 										<Typography variant='h5' gutterBottom>
-											{caption.caption}
+											{caption.caption} {caption.average_rating}
 											<Box
 												sx={{
 													width: 200,
@@ -249,3 +266,4 @@ class IndividualPost extends React.Component {
 }
 
 export default getPostId(IndividualPost);
+
