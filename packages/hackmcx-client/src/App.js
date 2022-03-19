@@ -18,11 +18,8 @@ export default function App() {
 						<Routes>
 							<Route exact path="/" element={<PostList/>}/>
 							<Route exact path="/posts/create" element={<CreatePost/>}/>
-<<<<<<< HEAD
 							<Route exact path="/user/:userId" element={<UserProfile/>}/>
-=======
 							<Route exact path="/individualPost/:postId" element={<IndividualPost/>}/>
->>>>>>> main
 						</Routes>
 					</Grid>
 			</BrowserRouter>
