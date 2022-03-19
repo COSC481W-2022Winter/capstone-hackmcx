@@ -12,30 +12,28 @@ const CreatePost = () => {
 	const [imageUrlError, setImageUrlError] = useState(false);
 	const [titleError, setTitleError] = useState(false);
 
-	
 	function validateURL() {
 		const image = !/(https?:\/\/.*\.(?:png|jpg|gif|svg))/i.test(imageUrl);
-		return (image); 
-	} 
+		return image;
+	}
 
 	//When the create post button is clicked, this function will be called.
 	function postRequest() {
 		if (title === '' || imageUrl === '' || validateURL()) {
-			if(title === '' && imageUrl === '') {
+			if (title === '' && imageUrl === '') {
 				alert('Enter a title and valid image before submitting');
-				setImageUrlError(true); setTitleError(true);
-			}
-			else if (title === '') {
+				setImageUrlError(true);
+				setTitleError(true);
+			} else if (title === '') {
 				alert('Enter a title before submitting');
 				setTitleError(true);
-			} 
-			else if (imageUrl === '') {
+			} else if (imageUrl === '') {
 				alert('Enter a valid image before submitting');
 				setImageUrlError(true);
-			} 
+			}
 			if (validateURL() && imageUrl !== '') {
-				alert('Image URL is not a valid URL')
-				setImageUrlError(true)
+				alert('Image URL is not a valid URL');
+				setImageUrlError(true);
 			}
 		} else {
 			axios
@@ -47,7 +45,7 @@ const CreatePost = () => {
 					(response) => {
 						alert('Post Succesfully Created!');
 						console.log(response);
-						setImageUrlError(false); 
+						setImageUrlError(false);
 						setTitleError(false);
 					},
 					(error) => {
@@ -55,17 +53,20 @@ const CreatePost = () => {
 						console.log(error);
 					}
 				);
-			}
+		}
 	}
 
 	return (
-		<Grid container direction={"row"} spacing={3} justifyContent={"center"} alignItems={"stretch"}>
+		<Grid
+			container
+			direction={'row'}
+			spacing={3}
+			justifyContent={'center'}
+			alignItems={'stretch'}>
 			<Grid item xs={7}>
-				<Grid container direction={"row"}  alignItems={"center"}>
-					<Grid item xs={1}>
-						<ImageIcon fontSize="large"/>
-					</Grid>
+				<Grid container direction={'row'} alignItems={'center'}>
 					<Grid item xs={11}>
+						<ImageIcon fontSize='large' />
 						<TextField
 							error={titleError}
 							fullWidth
@@ -79,11 +80,9 @@ const CreatePost = () => {
 				</Grid>
 			</Grid>
 			<Grid item xs={7}>
-				<Grid container direction={"row"} spacing={2} alignItems={"center"}>
-					<Grid item xs={1}>
-						<LinkIcon fontSize="large"/>
-					</Grid>
+				<Grid container direction={'row'} spacing={2} alignItems={'center'}>
 					<Grid item xs={11}>
+						<LinkIcon fontSize='large' />
 						<TextField
 							error={imageUrlError}
 							fullWidth
@@ -96,14 +95,13 @@ const CreatePost = () => {
 					</Grid>
 				</Grid>
 			</Grid>
-			<Grid item xs={6} align={"center"}>
+			<Grid item xs={6} align={'center'}>
 				<Button
 					fullWidth
 					size='medium'
 					variant='contained'
 					color='secondary'
-					onClick={() => postRequest()}
-				>
+					onClick={() => postRequest()}>
 					Create Post
 				</Button>
 			</Grid>

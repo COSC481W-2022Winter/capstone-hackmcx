@@ -181,6 +181,7 @@ class IndividualPost extends React.Component {
 											</Typography>
 											<Button
 												onClick={() => this.setShowCreateComponent()}
+												fullWidth
 												variant='contained'
 												color='primary'
 												sx={{ mt: 2 }}>
@@ -266,4 +267,3 @@ class IndividualPost extends React.Component {
 }
 
 export default getPostId(IndividualPost);
-
