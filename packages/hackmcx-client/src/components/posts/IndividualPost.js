@@ -1,121 +1,172 @@
-import React from 'react'
-import { Container, Card, Grid, Typography, CardMedia, CardContent, CircularProgress } from '@mui/material';
+import React from 'react';
+import {
+	Container,
+	Card,
+	Grid,
+	Typography,
+	CardMedia,
+	CardContent,
+	CircularProgress,
+	Button,
+} from '@mui/material';
 import { useParams } from 'react-router-dom';
+import CreateCaption from './captions/CaptionCreation'; //added
+import PostList from './PostList';
 
 function getPostId(Component) {
-  return function WrappedComponent(props) {
-    const {postId} = useParams();
-    return <Component {...props} postId={postId} />;
-  }
+	return function WrappedComponent(props) {
+		const { postId } = useParams();
+		return <Component {...props} postId={postId} />;
+	};
 }
 
 class IndividualPost extends React.Component {
+	state = {
+		isLoaded: false,
+		post: null,
+		captions: [],
+		error: null,
+		captionsError: '',
+		showCreateComponent: false, //added
+	};
 
-  state = {
-    isLoaded: false,
-    post: null,
-    captions: [],
-    error: null,
-    captionsError: ''
-  }
+	//added
+	setShowCreateComponent() {
+		this.setState({
+			showCreateComponent: !this.state.showCreateComponent,
+		});
+		//alert(this.props.postId)
+	}
 
-  componentDidMount() {
-    fetch(`${process.env.REACT_APP_API_URL}/api/v1/posts/${this.props.postId}`)
-        .then( res => res.json())
-        .then(
-            (result) => {
-              this.setState({
-                isLoaded: true,
-                post: result
-              });
-            },
-            (error) => {
-              this.setState({
-                isLoaded: true,
-                error
-              });
-            }
-        )
-    fetch(`${process.env.REACT_APP_API_URL}/api/v1/posts/${this.props.postId}/captions`)
-      .then( res => {
-        if (res.status === 404) {
-          this.state.captionsError = 'No captions on this post'
-        } else {
-          res.json()
-          .then(
-            (result) => {
-              if(result === null) {
-                alert("null result")
-              } else {
-                this.setState({
-                  isLoaded: true,
-                  captions: result
-               });
-              }
-            },
-            (error) => {
-              this.setState({
-                isLoaded: true,
-                error
-              });
-            }
-        )
-        }
-      }) 
-  }
+	componentDidMount() {
+		fetch(`${process.env.REACT_APP_API_URL}/api/v1/posts/${this.props.postId}`)
+			.then((res) => res.json())
+			.then(
+				(result) => {
+					this.setState({
+						isLoaded: true,
+						post: result,
+					});
+				},
+				(error) => {
+					this.setState({
+						isLoaded: true,
+						error,
+					});
+				}
+			);
+		fetch(
+			`${process.env.REACT_APP_API_URL}/api/v1/posts/${this.props.postId}/captions`
+		).then((res) => {
+			if (res.status === 404) {
+				this.state.captionsError = 'No captions on this post';
+			} else {
+				res.json().then(
+					(result) => {
+						if (result === null) {
+							alert('null result');
+						} else {
+							this.setState({
+								isLoaded: true,
+								captions: result,
+							});
+						}
+					},
+					(error) => {
+						this.setState({
+							isLoaded: true,
+							error,
+						});
+					}
+				);
+			}
+		});
+	}
 
-  render() {
-    const style = {
-      position: "relative",
-      top: "50px"
-    }
-    const { error, isLoaded, post, captions, captionsError } = this.state;
+	render() {
+		const style = {
+			position: 'relative',
+			top: '50px',
+		};
+		const { error, isLoaded, post, captions, captionsError } = this.state;
 
-    if (error) return <div>{error.message}</div>;
-    else if (!isLoaded) return <CircularProgress />;
-    else {
-      return (
-          <div style = {style}>
-            <Container>
-              <Grid container spacing={5} alignItems='center' justifyContent={'center'}>
-                  <Grid container spacing={5} justifyContent="center" alignItems="center">
-                    <Grid item xs={4} /*Post Component */>
-                      <Card height='100%' display='flex' flexDirection='column'>
-                        <a href={'/individualPost/' + post.id}>
-                          <CardMedia
-                              component="img"
-                              paddingTop='56.25%'
-                              image={post.imageUrl}
-                              alt={post.title}/>
-                        </a>
-                        <CardContent flexGrow='1'>
-                          <Typography gutterBottom variant='h5' component="div" textAlign='center'>
-                            {post.title}
-                          </Typography>
-                        </CardContent>
-                      </Card>
-                    </Grid>
-                  </Grid>
-                  {captions.map((caption) => (
-                    <Grid container spacing={4} justifyContent="center" alignItems="center">
-                      <Grid item xs={2} alignContent="center" /*Captions*/>
-                        <Typography variant='h5' gutterBottom>
-                          {caption.caption} {caption.average_rating}
-                        </Typography>
-                      </Grid>
-                    </Grid>
-                  ))}
-                  <Grid item>
-                    <Typography variant='h4' xs={5} flexGrow={1} textAlign='center' style={{color:"grey"}}>
-                      {captionsError}
-                    </Typography>
-                  </Grid>
-                  </Grid>
-            </Container>
-          </div>
-      );
-    }
-  }
+		if (error) return <div>{error.message}</div>;
+		else if (!isLoaded) return <CircularProgress />;
+		else {
+			return (
+				<div style={style}>
+					<Container>
+						<Grid
+							container
+							spacing={5}
+							alignItems='center'
+							justifyContent={'center'}>
+							<Grid
+								container
+								spacing={5}
+								justifyContent='center'
+								alignItems='center'>
+								<Grid item xs={4} /*Post Component */>
+									<Card height='100%' display='flex' flexDirection='column'>
+										<a href={'/individualPost/' + post.id}>
+											<CardMedia
+												component='img'
+												paddingTop='56.25%'
+												image={post.imageUrl}
+												alt={post.title}
+											/>
+										</a>
+										<CardContent flexGrow='1'>
+											<Typography
+												gutterBottom
+												variant='h5'
+												component='div'
+												textAlign='center'>
+												{post.title}
+											</Typography>
+											{/* added */}
+											<Button
+												onClick={() => this.setShowCreateComponent()}
+												variant='contained'
+												color='primary'
+												sx={{ mt: 2 }}>
+												Create Caption
+											</Button>
+											{this.state.showCreateComponent && <CreateCaption />}
+											{/* added */}
+										</CardContent>
+									</Card>
+								</Grid>
+							</Grid>
+							{captions.map((caption) => (
+								<Grid
+									container
+									spacing={4}
+									justifyContent='center'
+									alignItems='center'>
+									<Grid item xs={2} alignContent='center' /*Captions*/>
+										<Typography variant='h5' gutterBottom>
+											{caption.caption} {caption.average_rating}
+										</Typography>
+									</Grid>
+								</Grid>
+							))}
+							<Grid item>
+								<Typography
+									variant='h4'
+									xs={5}
+									flexGrow={1}
+									textAlign='center'
+									style={{ color: 'grey' }}>
+									{captionsError}
+								</Typography>
+							</Grid>
+						</Grid>
+					</Container>
+				</div>
+			);
+		}
+	}
 }
 
 export default getPostId(IndividualPost);
