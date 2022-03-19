@@ -1,4 +1,4 @@
-import React from 'react';
+import * as React from 'react';
 import {
 	Container,
 	Card,
@@ -8,10 +8,26 @@ import {
 	CardContent,
 	CircularProgress,
 	Button,
+	Rating,
 } from '@mui/material';
 import { useParams } from 'react-router-dom';
+import Box from '@mui/material/Box';
+import StarIcon from '@mui/icons-material/Star';
+import axios from 'axios';
 import CreateCaption from './captions/CaptionCreation'; //added
-import PostList from './PostList';
+
+const labels = {
+	0.5: '💩',
+	1: '💩+',
+	1.5: 'Poor',
+	2: 'Poor+',
+	2.5: 'Ok',
+	3: 'Ok+',
+	3.5: 'Good',
+	4: 'Good+',
+	4.5: 'Excellent',
+	5: 'Excellent+',
+};
 
 function getPostId(Component) {
 	return function WrappedComponent(props) {
@@ -27,10 +43,30 @@ class IndividualPost extends React.Component {
 		captions: [],
 		error: null,
 		captionsError: '',
-		showCreateComponent: false, //added
+		value: '',
+		rated: false,
+		showCreateComponent: false,
+		hover: -1,
 	};
 
-	//added
+	setValue(newValue) {
+		this.setState({
+			value: newValue,
+		});
+	}
+
+	setHover(newHover) {
+		this.setState({
+			hover: newHover,
+		});
+	}
+
+	setRated(newRated) {
+		this.setState({
+			rated: newRated,
+		});
+	}
+
 	setShowCreateComponent() {
 		this.setState({
 			showCreateComponent: !this.state.showCreateComponent,
@@ -83,6 +119,25 @@ class IndividualPost extends React.Component {
 		});
 	}
 
+	submitRating = (postId, captionId, average_rating) => {
+		this.setRated(true);
+		axios
+			.post(
+				`${process.env.REACT_APP_API_URL}/api/v1/posts/${postId}/captions/${captionId}/_rate`,
+				{ rating: average_rating }
+			)
+			.then(
+				(response) => {
+					alert('Caption rated!');
+					console.log(response);
+				},
+				(error) => {
+					alert('Caption could not be rated!');
+					console.log(error);
+				}
+			);
+	};
+
 	render() {
 		const style = {
 			position: 'relative',
@@ -124,7 +179,6 @@ class IndividualPost extends React.Component {
 												textAlign='center'>
 												{post.title}
 											</Typography>
-											{/* added */}
 											<Button
 												onClick={() => this.setShowCreateComponent()}
 												variant='contained'
@@ -133,7 +187,6 @@ class IndividualPost extends React.Component {
 												Create Caption
 											</Button>
 											{this.state.showCreateComponent && <CreateCaption />}
-											{/* added */}
 										</CardContent>
 									</Card>
 								</Grid>
@@ -144,9 +197,52 @@ class IndividualPost extends React.Component {
 									spacing={4}
 									justifyContent='center'
 									alignItems='center'>
-									<Grid item xs={2} alignContent='center' /*Captions*/>
+									<Grid item xs={2} alignContent='center'>
 										<Typography variant='h5' gutterBottom>
 											{caption.caption} {caption.average_rating}
+											<Box
+												sx={{
+													width: 200,
+													display: 'flex',
+													alignItems: 'center',
+												}}>
+												<Rating
+													name='hover-feedback'
+													value={caption.average_rating}
+													precision={0.5}
+													onChange={(event, newValue) => {
+														this.setValue(newValue);
+													}}
+													onChangeActive={(event, newHover) => {
+														this.setHover(newHover);
+													}}
+													onClick={() =>
+														!this.state.rated &&
+														this.submitRating(
+															this.props.postId,
+															caption.id,
+															caption.average_rating
+														)
+													}
+													emptyIcon={
+														<StarIcon
+															style={{ opacity: 0.55 }}
+															fontSize='inherit'
+														/>
+													}
+												/>
+												{this.state.value !== null && (
+													<Box sx={{ ml: 2 }}>
+														{
+															labels[
+																this.state.hover !== -1
+																	? this.state.hover
+																	: this.state.value
+															]
+														}
+													</Box>
+												)}
+											</Box>
 										</Typography>
 									</Grid>
 								</Grid>
@@ -170,3 +266,4 @@ class IndividualPost extends React.Component {
 }
 
 export default getPostId(IndividualPost);
+
