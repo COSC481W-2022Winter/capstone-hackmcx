@@ -43,9 +43,10 @@ export default function CreateCaption() {
 						onChange={(e) => setCaption(e.target.value)}
 					/>
 				</Grid>
-				<Grid item xs={2}>
+				<Grid item xs={12}>
 					<Button
 						disabled={submitted}
+						fullWidth
 						size='medium'
 						variant='contained'
 						color='secondary'
