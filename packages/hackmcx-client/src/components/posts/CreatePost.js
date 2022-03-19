@@ -5,29 +5,57 @@ import Grid from '@material-ui/core/Grid';
 import LinkIcon from '@mui/icons-material/Link';
 import axios from 'axios';
 import { useState } from 'react';
-import {Box, FormControl} from "@mui/material";
 
 const CreatePost = () => {
 	const [title, setTitle] = useState('');
 	const [imageUrl, setImageUrl] = useState('');
+	const [imageUrlError, setImageUrlError] = useState(false);
+	const [titleError, setTitleError] = useState(false);
+
+	
+	function validateURL() {
+		const image = !/(https?:\/\/.*\.(?:png|jpg|gif|svg))/i.test(imageUrl);
+		return (image); 
+	} 
 
 	//When the create post button is clicked, this function will be called.
 	function postRequest() {
-		axios
-			.post(`${process.env.REACT_APP_API_URL}/api/v1/posts`, {
-				title: title,
-				imageUrl: imageUrl,
-			})
-			.then(
-				(response) => {
-					alert('Post Succesfully Created!');
-					console.log(response);
-				},
-				(error) => {
-					alert('Error, post could not be Created!');
-					console.log(error);
-				}
-			);
+		if (title === '' || imageUrl === '' || validateURL()) {
+			if(title === '' && imageUrl === '') {
+				alert('Enter a title and valid image before submitting');
+				setImageUrlError(true); setTitleError(true);
+			}
+			else if (title === '') {
+				alert('Enter a title before submitting');
+				setTitleError(true);
+			} 
+			else if (imageUrl === '') {
+				alert('Enter a valid image before submitting');
+				setImageUrlError(true);
+			} 
+			if (validateURL() && imageUrl !== '') {
+				alert('Image URL is not a valid URL')
+				setImageUrlError(true)
+			}
+		} else {
+			axios
+				.post(`${process.env.REACT_APP_API_URL}/api/v1/posts`, {
+					title: title,
+					imageUrl: imageUrl,
+				})
+				.then(
+					(response) => {
+						alert('Post Succesfully Created!');
+						console.log(response);
+						setImageUrlError(false); 
+						setTitleError(false);
+					},
+					(error) => {
+						alert('Error, post could not be Created!');
+						console.log(error);
+					}
+				);
+			}
 	}
 
 	return (
@@ -39,6 +67,7 @@ const CreatePost = () => {
 					</Grid>
 					<Grid item xs={11}>
 						<TextField
+							error={titleError}
 							fullWidth
 							variant='filled'
 							color='primary'
@@ -56,6 +85,7 @@ const CreatePost = () => {
 					</Grid>
 					<Grid item xs={11}>
 						<TextField
+							error={imageUrlError}
 							fullWidth
 							variant='filled'
 							color='primary'
