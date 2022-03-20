@@ -4,18 +4,17 @@ import Button from '@material-ui/core/Button';
 import Grid from '@material-ui/core/Grid';
 import axios from "axios";
 
-export default function CreateCaption({postId, callback}){
+export default function Caption({postId}){
     const [submitted, setSubmitted] = useState(false)
     const [caption, setCaption] = useState('')
-
 
     const submit = () => {
         axios.post(`${process.env.REACT_APP_API_URL}/api/v1/posts/${postId}/captions`, { caption: caption })
             .then(
                 (response) => {
+                    alert('Caption Succesfully created!');
                     console.log(response);
                     setSubmitted(true)
-                    callback()
                 },
                 (error) => {
                     alert('Caption could not be created!');
@@ -42,8 +41,7 @@ export default function CreateCaption({postId, callback}){
                     size='medium'
                     variant='contained'
                     color='secondary'
-                    onClick={() => submit()}
-                >
+                    onClick={() => submit()}>
                     Post Caption
                 </Button>
             </Grid>

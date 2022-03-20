@@ -1,67 +1,83 @@
-import React, { useState } from 'react';
-import { makeStyles } from '@material-ui/core/styles';
-import Button from '@material-ui/core/Button';
-import TextField from '@mui/material/TextField';
-import Rating from '@mui/material/Rating';
+import React, {useEffect, useState} from 'react';
 import {
 	Card,
-	CardContent,
 	CardMedia,
 	CircularProgress,
-	Container,
 	Grid,
 	Typography,
-	Tooltip,
 } from '@mui/material';
+import axios from "axios";
+import {useParams} from "react-router-dom";
+import CreateCaption from "./captions/CaptionCreation";
+import CaptionRating from "./captions/Ratings";
 
-function renderPost(props) {
-	return (
-		<Grid container spacing={5} justifyContent='center' alignItems='center'>
-			<Grid item /*Post Component */>
-				<Card
-					height='100%'
-					display='flex'
-					flexDirection='column'
-					variant='outlined'
-					sx={{ width: '30vw', margin: '15px' }}>
-					<Tooltip title='Click to view captions' arrow>
-						<a href={'individualPost/' + props.post.id}>
-							<CardMedia
-								component='img'
-								paddingTop='56.25%'
-								image={props.post.imageUrl}
-								alt={props.post.title}
-							/>
-						</a>
-					</Tooltip>
-					<CardContent flexGrow='1'>
-						<Typography
-							style={{}}
-							variant={'h3'}
-							text={'Text'}
-							noWrap={false}
-							paragraph={false}
-							color={'initial'}
-							align={'center'}
-							gutterBottom={false}>
-							{props.post.title}
-							<Typography
-								variant={'h6'}
-								text={'Text'}
-								noWrap={false}
-								paragraph={false}
-								color={'initial'}
-								align={'center'}
-								style={{ marginTop: '10px' }}>
-								{props.post.caption}
-							</Typography>
-							<Rating name='simple-controlled' value={3} />
-						</Typography>
-					</CardContent>
-				</Card>
+export default function Post(props) {
+	const [post, setPost] = useState({})
+	const [isLoaded, setIsLoaded] = useState(false)
+	let { postId } = useParams();
+
+	const fetchPost = () => {
+		axios.get(`${process.env.REACT_APP_API_URL}/api/v1/posts/${postId}`)
+			.then((result) => {
+				setPost(result.data)
+				setIsLoaded(true)
+			})
+			.catch((error) => {
+				setIsLoaded(true)
+			})
+	}
+
+	useEffect(() => {
+		fetchPost()
+	}, [])
+
+	if (!isLoaded){
+		return (<Grid container><Grid item><CircularProgress /></Grid></Grid>)
+	} else {
+		return (
+			<Grid container spacing={5} justifyContent='center' alignItems='center'>
+				<Grid item xs={12}>
+					<Card
+						sx={{padding: 2}}
+					>
+						<CardMedia
+							component='img'
+							image={post.imageUrl}
+							alt={post.title}
+						/>
+					</Card>
+				</Grid>
+				{
+					post.captions.map((caption) => {
+						return (
+							<React.Fragment>
+								<Grid item xs={10}>
+									<Typography
+										gutterBottom
+										variant={"body1"}
+										component={"div"}
+										align={"left"}
+										noWrap={false}
+									>
+										{caption.caption}
+									</Typography>
+								</Grid>
+								<Grid item xs={2}>
+									<CaptionRating
+										postId={postId}
+										captionId={caption.id}
+										average_rating={caption.average_rating}
+										callback={fetchPost}
+									/>
+								</Grid>
+							</React.Fragment>
+						)
+					})
+				}
+				<Grid item xs={12} justifyContent={"center"}>
+					<CreateCaption postId={postId} callback={fetchPost} />
+				</Grid>
 			</Grid>
-		</Grid>
-	);
+		);
+	}
 }
-
-export default renderPost;
