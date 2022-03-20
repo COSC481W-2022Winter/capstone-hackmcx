@@ -3,6 +3,7 @@ import {Route, BrowserRouter, Routes, useParams} from 'react-router-dom';
 import CreatePost from './components/posts/CreatePost';
 import PostList from './components/posts/PostList';
 import IndividualPost from './components/posts/IndividualPost';
+import ErrorPage from './components/ErrorPage';
 import AppNav from "./AppNav";
 import Grid from "@material-ui/core/Grid";
 import UserProfile from './components/UserProfile';
@@ -20,6 +21,7 @@ export default function App() {
 							<Route exact path="/posts/create" element={<CreatePost/>}/>
 							<Route exact path="/user/:userId" element={<UserProfile/>}/>
 							<Route exact path="/individualPost/:postId" element={<IndividualPost/>}/>
+							<Route exact path="/error/404" element={<ErrorPage/>}/>
 						</Routes>
 					</Grid>
 			</BrowserRouter>
