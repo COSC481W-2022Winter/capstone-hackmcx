@@ -10,6 +10,7 @@ import axios from "axios";
 import {useParams} from "react-router-dom";
 import CreateCaption from "./captions/CaptionCreation";
 import CaptionRating from "./captions/Ratings";
+import ErrorPage from "../ErrorPage";
 
 export default function Post(props) {
 	const [post, setPost] = useState({})
@@ -30,10 +31,33 @@ export default function Post(props) {
 	useEffect(() => {
 		fetchPost()
 	}, [])
-
 	if (!isLoaded){
 		return (<Grid container><Grid item><CircularProgress /></Grid></Grid>)
-	} else {
+	} 
+	if(post && Object.keys(post).length === 0 && Object.getPrototypeOf(post) === Object.prototype){
+		return(<ErrorPage/>)
+	}
+	if (!post.hasOwnProperty('captions')){
+		return(
+			<Grid container spacing={5} justifyContent='center' alignItems='center'>
+				<Grid item xs={12}>
+					<Card
+						sx={{padding: 2}}
+					>
+						<CardMedia
+							component='img'
+							image={post.imageUrl}
+							alt={post.title}
+						/>
+					</Card>
+				</Grid>
+				<Grid item xs={12} justifyContent={"center"}>
+					<CreateCaption postId={postId} callback={fetchPost} />
+				</Grid>
+			</Grid>
+		)
+	}
+	else {
 		return (
 			<Grid container spacing={5} justifyContent='center' alignItems='center'>
 				<Grid item xs={12}>
