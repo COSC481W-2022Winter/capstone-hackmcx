@@ -28,7 +28,7 @@ export default function PostList(){
 				{
 					posts.map((post) => {
 						return (
-							<Grid item key={post.id} xs={12} key={post.id}>
+							<Grid item key={post.id} xs={12}>
 								<Card
 									sx={{padding: 2}}
 									onClick={() => nav(`/posts/${post.id}`)}
@@ -37,6 +37,7 @@ export default function PostList(){
 										component='img'
 										image={post.imageUrl}
 										alt={post.title}
+										title={post.title}
 									/>
 									<CardContent>
 										<Typography
