@@ -2,14 +2,19 @@ import {dbClient} from '../db/db.js'
 
 export async function getPosts(req, res){
     var finalResults;
+    var top
     await dbClient
-        .select('title', 'imageUrl', 'posts.createdAt', 'posts.id', 'caption')
+        .select('title', 'imageUrl', 'posts.createdAt', 'posts.id', 'topPost.caption')
         .from('posts')
-        .leftOuterJoin('captions as c', function() {
-          this.on('posts.id', '=', 'post_id')
-          this.andOn('average_rating', '=', dbClient.raw('(select max(??) from ?? where ??=??)', ['average_rating', 'captions', 'post_id', 'c.post_id']))
+        .leftJoin(
+            dbClient
+            .select(dbClient.raw('post_id, caption, max(average_rating)'))
+            .from('captions')
+            .groupBy('post_id')
+            .as('topPost')
+        , function(){
+            this.on('posts.id', '=', 'topPost.post_id')
         })
-        .groupBy('posts.id')
         .then(results => {finalResults = results})
 
     finalResults.forEach(function (post, index) {
