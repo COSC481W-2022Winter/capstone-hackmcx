@@ -21,7 +21,7 @@ export async function getPosts(req, res){
 
 export async function getPostById(req, res){
     var finalResults
-    dbClient
+    await dbClient
         .select('title', 'imageUrl', 'createdAt', 'id')
         .from('posts')
         .where('id', req.params.postId)
@@ -33,14 +33,13 @@ export async function getPostById(req, res){
                 res.send()
             }
         })
-    dbClient
+    await dbClient
         .select('caption', 'average_rating', 'createdAt', 'id')
         .from('captions')
         .where('post_id', req.params.postId)
         .then(results => {
             if (results.length > 0){
                 finalResults.captions = results;
-                
             }
             res.send(finalResults) 
         })

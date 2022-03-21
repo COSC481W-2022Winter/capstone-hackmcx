@@ -5,55 +5,61 @@ import Grid from '@material-ui/core/Grid';
 import LinkIcon from '@mui/icons-material/Link';
 import axios from 'axios';
 import { useState } from 'react';
+import { Link } from 'react-router-dom';
 
 const CreatePost = () => {
 	const [title, setTitle] = useState('');
 	const [imageUrl, setImageUrl] = useState('');
-	const [imageUrlError, setImageUrlError] = useState(false);
-	const [titleError, setTitleError] = useState(false);
+	const [titleHelper, setTitleHelper] = useState("Please enter a valid title.");
+	const [urlHelper, setURLHelper] = useState("Image URL cannot be empty.");
+	const [imageUrlError, setImageUrlError] = useState(true);
+	const [titleError, setTitleError] = useState(true);
 
-	function validateURL() {
-		const image = !/(https?:\/\/.*\.(?:png|jpg|gif|svg))/i.test(imageUrl);
-		return image;
+	function validationTitle(val) {
+		if (!val || val === '' || /^\s*$/.test(val)) {
+			setTitleError(true);
+			setTitleHelper("Please enter a valid title.")
+		}
+		else{
+			setTitle(val);
+			setTitleError(false);
+			setTitleHelper("")
+		} 
+	}
+
+	function validationImageURL(val) {
+		if (!val || val === '') {
+			setImageUrlError(true);
+			setURLHelper("Image URL cannot be empty.")
+		} 
+		else if (!/(https?:\/\/.*\.(?:png|jpg|gif|svg))/i.test(val)) {
+			setImageUrlError(true);
+			setURLHelper("Image URL is not a valid URL")
+		}
+		else{
+			setImageUrl(val);
+			setImageUrlError(false);
+			setURLHelper("")
+		}
 	}
 
 	//When the create post button is clicked, this function will be called.
 	function postRequest() {
-		if (title === '' || imageUrl === '' || validateURL()) {
-			if (title === '' && imageUrl === '') {
-				alert('Enter a title and valid image before submitting');
-				setImageUrlError(true);
-				setTitleError(true);
-			} else if (title === '') {
-				alert('Enter a title before submitting');
-				setTitleError(true);
-			} else if (imageUrl === '') {
-				alert('Enter a valid image before submitting');
-				setImageUrlError(true);
-			}
-			if (validateURL() && imageUrl !== '') {
-				alert('Image URL is not a valid URL');
-				setImageUrlError(true);
-			}
-		} else {
-			axios
-				.post(`${process.env.REACT_APP_API_URL}/api/v1/posts`, {
-					title: title,
-					imageUrl: imageUrl,
-				})
-				.then(
-					(response) => {
-						alert('Post Succesfully Created!');
-						console.log(response);
-						setImageUrlError(false);
-						setTitleError(false);
-					},
-					(error) => {
-						alert('Error, post could not be Created!');
-						console.log(error);
-					}
-				);
-		}
+		axios
+			.post(`${process.env.REACT_APP_API_URL}/api/v1/posts`, {
+				title: title,
+				imageUrl: imageUrl,
+			})
+			.then(
+				(response) => {
+					console.log(response);
+					setImageUrlError(false);
+					setTitleError(false);
+				},
+				(error) => {
+					console.log(error);
+				}
+			);
 	}
 
 	return (
@@ -74,7 +80,8 @@ const CreatePost = () => {
 							color='primary'
 							type='string'
 							label='Post Title'
-							onChange={(e) => setTitle(e.target.value)}
+							onChange={(e) => validationTitle(e.target.value)}
+							helperText = {titleHelper}
 						/>
 					</Grid>
 				</Grid>
@@ -90,7 +97,8 @@ const CreatePost = () => {
 							color='primary'
 							type='url'
 							label='Image URL'
-							onChange={(e) => setImageUrl(e.target.value)}
+							onChange={(e) => validationImageURL(e.target.value)}
+							helperText = {urlHelper}
 						/>
 					</Grid>
 				</Grid>
@@ -101,7 +109,10 @@ const CreatePost = () => {
 					size='medium'
 					variant='contained'
 					color='secondary'
-					onClick={() => postRequest()}>
+					disabled = {(titleError || imageUrlError)}
+					onClick={() => postRequest()}
+					component = {Link}
+					to="/">
 					Create Post
 				</Button>
 			</Grid>

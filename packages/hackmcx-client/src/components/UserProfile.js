@@ -12,6 +12,7 @@ import Grid from '@mui/material/Grid';
 import Avatar from '@mui/material/Avatar';
 import { useState } from 'react';
 import IconButton from '@mui/material/IconButton';
+import ErrorPage from './ErrorPage';
 
 
 
@@ -93,7 +94,7 @@ function UserId(Component) {
 
 
         
-        if (error) return <div>{error.message}</div>;
+        if (error) return <ErrorPage />;
         else if (!isLoaded) return <CircularProgress />;
         else {
             return (
