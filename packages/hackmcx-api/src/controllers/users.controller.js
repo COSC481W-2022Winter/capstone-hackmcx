@@ -1,7 +1,5 @@
 import {dbClient} from '../db/db.js'
-import {isMissingOrWhitespace} from "../utils/validation.js";
-import bcrypt from "bcrypt";
-import jwt from "jsonwebtoken";
+import bcrypt from 'bcrypt'
 
 export async function getUsers(req, res){
     await dbClient
@@ -25,38 +23,49 @@ export async function getUsersByUserId(req, res){
         })
 }
 
-export async function postUser(req, res){
+function userValidation(req){
     const emptyUsername = !req.body.username || /^\s*$/.test(req.body.username);
     const emptyFirstName = !req.body.firstname || /^\s*$/.test(req.body.firstname);
-    const emptyLastName = !req.body.lastname || /^\s*$/.test(req.body.lastname);    
-    const noGivenImageUrl = !req.body.imageUrl;
+    const emptyLastName = !req.body.lastname || /^\s*$/.test(req.body.lastname);
+    const emptyPassword = !req.body.password || /^\s*$/.test(req.body.password);  
     const notPicture = !req.body.imageUrl || !/(https?:\/\/.*\.(?:png|jpg|gif|svg))/i.test(req.body.imageUrl);
+    const noGivenImageUrl = !req.body.imageUrl;
 
     if(emptyUsername){
-        res.statusCode = 400;
-        res.send({error: "Username cannot be missing or blank."});
-        return
+        return "Username cannot be missing or blank.";
     }
     if(emptyFirstName){
-        res.statusCode = 400;
-        res.send({error: "First Name cannot be missing or blank."});
-        return
+        return "First Name cannot be missing or blank.";
     }
     if(emptyLastName){
-        res.statusCode = 400;
-        res.send({error: "Last Name cannot be missing or blank."});
-        return
+        return "Last Name cannot be missing or blank.";
+    }
+    if(emptyPassword){
+        return "Password cannot be missing or blank.";
     }
     if(!noGivenImageUrl && notPicture){
+        return "Invalid image URL: Image url is invalid.";
+    }
+    else{
+        return 1;
+    }
+}
+
+export async function postUser(req, res){
+    const validation = userValidation(req);
+
+    if(validation != 1){
         res.statusCode = 400;
-        res.send({error: "Invalid image URL: Image url is invalid."});
-        return
+        res.send(validation);
+        return;
     }
 
+    const hashPass = await bcrypt.hash(req.body.password, 12);
+
     try{
-        let id =  noGivenImageUrl ? 
-                    (await dbClient.table('users').insert({username: req.body.username, first_name: req.body.firstname, last_name: req.body.lastname }))[0] :
-                    (await dbClient.table('users').insert({username: req.body.username, first_name: req.body.firstname, last_name: req.body.lastname, imageUrl: req.body.imageUrl}))[0]
+        let id =  !req.body.imageUrl ? 
+                    (await dbClient.table('users').insert({username: req.body.username, first_name: req.body.firstname, last_name: req.body.lastname, password: hashPass }))[0] :
+                    (await dbClient.table('users').insert({username: req.body.username, first_name: req.body.firstname, last_name: req.body.lastname, password: hashPass, imageUrl: req.body.imageUrl}))[0]
         res.statusCode = 201;
         res.header('Location',`${req.baseUrl}/${id}` );
         res.send();
@@ -72,34 +81,26 @@ export async function postUser(req, res){
     }
 }
 
-export async function postLogin(req, res) {
-    if (isMissingOrWhitespace(req.body.username)) {
-        res.statusCode = 400;
-        res.send({error: "Username cannot be missing or blank."});
-        return
-    }
+export async function updateUsersByUserId(req, res){
+    const validation = userValidation(req);
 
-    if (isMissingOrWhitespace(req.body.password)) {
+    if(validation != 1){
         res.statusCode = 400;
-        res.send({error: "Password cannot be missing or blank."});
-        return
-    }
-
-    const results = await dbClient.from('users')
-        .select('password')
-        .where('username', req.body.username);
-
-    if (results < 1 || !await bcrypt.compare(req.body.password, results[0].password)) {
-        res.statusCode = 400;
-        res.send({error: "Invalid username password combination."});
+        res.send(validation);
         return;
     }
 
-    const wt = jwt.sign({
-        user: req.body.username,
-        exp: Math.floor(Date.now() / 1000) + (60 * 60),
-    }, process.env.AUTH_TOKEN_SECRET)
+    const hashPass = await bcrypt.hash(req.body.password, 12);
 
-    res.statusCode = 200
-    res.send({token: wt})
+    try{
+        let id =  !req.body.imageUrl ? 
+                    (await dbClient.table('users').where('username', req.params.userId).update({username: req.body.username, first_name: req.body.firstname, last_name: req.body.lastname, password: hashPass }))[0] :
+                    (await dbClient.table('users').where('username', req.params.userId).update({username: req.body.username, first_name: req.body.firstname, last_name: req.body.lastname, password: hashPass, imageUrl: req.body.imageUrl}))[0]
+        res.statusCode = 201;
+        res.header('Location',`${req.baseUrl}/${id}` );
+        res.send();
+    }catch(e){
+        res.statusCode = 500;
+        res.send();
+    }
 }
