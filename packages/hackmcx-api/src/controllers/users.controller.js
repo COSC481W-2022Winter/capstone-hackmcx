@@ -9,7 +9,7 @@ export async function getUsers(req, res){
 }
 
 export async function getUsersByUserId(req, res){
-    dbClient
+    await dbClient
         .select('username', 'first_name', 'last_name', 'imageUrl')
         .from('users')
         .where('username', req.params.userId)
@@ -92,15 +92,35 @@ export async function updateUsersByUserId(req, res){
 
     const hashPass = await bcrypt.hash(req.body.password, 12);
 
-    try{
-        let id =  !req.body.imageUrl ? 
-                    (await dbClient.table('users').where('username', req.params.userId).update({username: req.body.username, first_name: req.body.firstname, last_name: req.body.lastname, password: hashPass }))[0] :
-                    (await dbClient.table('users').where('username', req.params.userId).update({username: req.body.username, first_name: req.body.firstname, last_name: req.body.lastname, password: hashPass, imageUrl: req.body.imageUrl}))[0]
-        res.statusCode = 201;
-        res.header('Location',`${req.baseUrl}/${id}` );
-        res.send();
-    }catch(e){
-        res.statusCode = 500;
-        res.send();
+    let userExists = false;
+
+    await dbClient
+        .select('username', 'first_name', 'last_name', 'imageUrl')
+        .from('users')
+        .where('username', req.params.userId)
+        .then(results => {
+            if (results.length > 0){
+                userExists = true;
+            }
+            else{
+                userExists = false;
+            }
+        })
+    
+    if(userExists){
+        try{
+            let id =  !req.body.imageUrl ? 
+                        (await dbClient.table('users').where('username', req.params.userId).update({username: req.body.username, first_name: req.body.firstname, last_name: req.body.lastname, password: hashPass }))[0] :
+                        (await dbClient.table('users').where('username', req.params.userId).update({username: req.body.username, first_name: req.body.firstname, last_name: req.body.lastname, password: hashPass, imageUrl: req.body.imageUrl}))[0]
+            res.statusCode = 201;
+            res.header('Location',`${req.baseUrl}/${id}` );
+            res.send();
+        }catch(e){
+            res.statusCode = 500;
+            res.send();
+        }
+    }
+    else{
+        postUser(req, res);
     }
 }
