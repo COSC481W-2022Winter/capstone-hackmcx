@@ -1,4 +1,7 @@
 import {dbClient} from '../db/db.js'
+import {isMissingOrWhitespace} from "../utils/validation.js";
+import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
 
 export async function getUsers(req, res){
     await dbClient
@@ -67,4 +70,36 @@ export async function postUser(req, res){
            res.send();
         }
     }
+}
+
+export async function postLogin(req, res) {
+    if (isMissingOrWhitespace(req.body.username)) {
+        res.statusCode = 400;
+        res.send({error: "Username cannot be missing or blank."});
+        return
+    }
+
+    if (isMissingOrWhitespace(req.body.password)) {
+        res.statusCode = 400;
+        res.send({error: "Password cannot be missing or blank."});
+        return
+    }
+
+    const results = await dbClient.from('users')
+        .select('password')
+        .where('username', req.body.username);
+
+    if (results < 1 || !await bcrypt.compare(req.body.password, results[0].password)) {
+        res.statusCode = 400;
+        res.send({error: "Invalid username password combination."});
+        return;
+    }
+
+    const wt = jwt.sign({
+        user: req.body.username,
+        exp: Math.floor(Date.now() / 1000) + (60 * 60),
+    }, process.env.AUTH_TOKEN_SECRET)
+
+    res.statusCode = 200
+    res.send({token: wt})
 }
