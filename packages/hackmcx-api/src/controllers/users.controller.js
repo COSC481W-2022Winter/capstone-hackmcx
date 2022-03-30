@@ -1,5 +1,7 @@
 import {dbClient} from '../db/db.js'
-import bcrypt from 'bcrypt'
+import {isMissingOrWhitespace} from "../utils/validation.js";
+import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
 
 export async function getUsers(req, res){
     await dbClient
@@ -27,7 +29,7 @@ function userValidation(req){
     const emptyUsername = !req.body.username || /^\s*$/.test(req.body.username);
     const emptyFirstName = !req.body.firstname || /^\s*$/.test(req.body.firstname);
     const emptyLastName = !req.body.lastname || /^\s*$/.test(req.body.lastname);
-    const emptyPassword = !req.body.password || /^\s*$/.test(req.body.password);  
+    const emptyPassword = !req.body.password || /^\s*$/.test(req.body.password);
     const notPicture = !req.body.imageUrl || !/(https?:\/\/.*\.(?:png|jpg|gif|svg))/i.test(req.body.imageUrl);
     const noGivenImageUrl = !req.body.imageUrl;
 
@@ -63,7 +65,7 @@ export async function postUser(req, res){
     const hashPass = await bcrypt.hash(req.body.password, 12);
 
     try{
-        let id =  !req.body.imageUrl ? 
+        let id =  !req.body.imageUrl ?
                     (await dbClient.table('users').insert({username: req.body.username, first_name: req.body.firstname, last_name: req.body.lastname, password: hashPass }))[0] :
                     (await dbClient.table('users').insert({username: req.body.username, first_name: req.body.firstname, last_name: req.body.lastname, password: hashPass, imageUrl: req.body.imageUrl}))[0]
         res.statusCode = 201;
@@ -106,10 +108,10 @@ export async function updateUsersByUserId(req, res){
                 userExists = false;
             }
         })
-    
+
     if(userExists){
         try{
-            let id =  !req.body.imageUrl ? 
+            let id =  !req.body.imageUrl ?
                         (await dbClient.table('users').where('username', req.params.userId).update({username: req.body.username, first_name: req.body.firstname, last_name: req.body.lastname, password: hashPass }))[0] :
                         (await dbClient.table('users').where('username', req.params.userId).update({username: req.body.username, first_name: req.body.firstname, last_name: req.body.lastname, password: hashPass, imageUrl: req.body.imageUrl}))[0]
             res.statusCode = 201;
@@ -123,4 +125,36 @@ export async function updateUsersByUserId(req, res){
     else{
         postUser(req, res);
     }
+}
+
+export async function postLogin(req, res) {
+    if (isMissingOrWhitespace(req.body.username)) {
+        res.statusCode = 400;
+        res.send({error: "Username cannot be missing or blank."});
+        return
+    }
+
+    if (isMissingOrWhitespace(req.body.password)) {
+        res.statusCode = 400;
+        res.send({error: "Password cannot be missing or blank."});
+        return
+    }
+
+    const results = await dbClient.from('users')
+        .select('password')
+        .where('username', req.body.username);
+
+    if (results < 1 || !await bcrypt.compare(req.body.password, results[0].password)) {
+        res.statusCode = 400;
+        res.send({error: "Invalid username password combination."});
+        return;
+    }
+
+    const wt = jwt.sign({
+        user: req.body.username,
+        exp: Math.floor(Date.now() / 1000) + (60 * 60),
+    }, process.env.AUTH_TOKEN_SECRET)
+
+    res.statusCode = 200
+    res.send({token: wt})
 }
