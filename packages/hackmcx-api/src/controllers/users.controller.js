@@ -1,4 +1,5 @@
 import {dbClient} from '../db/db.js'
+import bcrypt from 'bcrypt'
 
 export async function getUsers(req, res){
     await dbClient
@@ -8,7 +9,7 @@ export async function getUsers(req, res){
 }
 
 export async function getUsersByUserId(req, res){
-    dbClient
+    await dbClient
         .select('username', 'first_name', 'last_name', 'imageUrl')
         .from('users')
         .where('username', req.params.userId)
@@ -22,38 +23,49 @@ export async function getUsersByUserId(req, res){
         })
 }
 
-export async function postUser(req, res){
+function userValidation(req){
     const emptyUsername = !req.body.username || /^\s*$/.test(req.body.username);
     const emptyFirstName = !req.body.firstname || /^\s*$/.test(req.body.firstname);
-    const emptyLastName = !req.body.lastname || /^\s*$/.test(req.body.lastname);    
-    const noGivenImageUrl = !req.body.imageUrl;
+    const emptyLastName = !req.body.lastname || /^\s*$/.test(req.body.lastname);
+    const emptyPassword = !req.body.password || /^\s*$/.test(req.body.password);  
     const notPicture = !req.body.imageUrl || !/(https?:\/\/.*\.(?:png|jpg|gif|svg))/i.test(req.body.imageUrl);
+    const noGivenImageUrl = !req.body.imageUrl;
 
     if(emptyUsername){
-        res.statusCode = 400;
-        res.send({error: "Username cannot be missing or blank."});
-        return
+        return "Username cannot be missing or blank.";
     }
     if(emptyFirstName){
-        res.statusCode = 400;
-        res.send({error: "First Name cannot be missing or blank."});
-        return
+        return "First Name cannot be missing or blank.";
     }
     if(emptyLastName){
-        res.statusCode = 400;
-        res.send({error: "Last Name cannot be missing or blank."});
-        return
+        return "Last Name cannot be missing or blank.";
+    }
+    if(emptyPassword){
+        return "Password cannot be missing or blank.";
     }
     if(!noGivenImageUrl && notPicture){
+        return "Invalid image URL: Image url is invalid.";
+    }
+    else{
+        return 1;
+    }
+}
+
+export async function postUser(req, res){
+    const validation = userValidation(req);
+
+    if(validation != 1){
         res.statusCode = 400;
-        res.send({error: "Invalid image URL: Image url is invalid."});
-        return
+        res.send(validation);
+        return;
     }
 
+    const hashPass = await bcrypt.hash(req.body.password, 12);
+
     try{
-        let id =  noGivenImageUrl ? 
-                    (await dbClient.table('users').insert({username: req.body.username, first_name: req.body.firstname, last_name: req.body.lastname }))[0] :
-                    (await dbClient.table('users').insert({username: req.body.username, first_name: req.body.firstname, last_name: req.body.lastname, imageUrl: req.body.imageUrl}))[0]
+        let id =  !req.body.imageUrl ? 
+                    (await dbClient.table('users').insert({username: req.body.username, first_name: req.body.firstname, last_name: req.body.lastname, password: hashPass }))[0] :
+                    (await dbClient.table('users').insert({username: req.body.username, first_name: req.body.firstname, last_name: req.body.lastname, password: hashPass, imageUrl: req.body.imageUrl}))[0]
         res.statusCode = 201;
         res.header('Location',`${req.baseUrl}/${id}` );
         res.send();
@@ -66,5 +78,49 @@ export async function postUser(req, res){
            res.statusCode = 500;
            res.send();
         }
+    }
+}
+
+export async function updateUsersByUserId(req, res){
+    const validation = userValidation(req);
+
+    if(validation != 1){
+        res.statusCode = 400;
+        res.send(validation);
+        return;
+    }
+
+    const hashPass = await bcrypt.hash(req.body.password, 12);
+
+    let userExists = false;
+
+    await dbClient
+        .select('username', 'first_name', 'last_name', 'imageUrl')
+        .from('users')
+        .where('username', req.params.userId)
+        .then(results => {
+            if (results.length > 0){
+                userExists = true;
+            }
+            else{
+                userExists = false;
+            }
+        })
+    
+    if(userExists){
+        try{
+            let id =  !req.body.imageUrl ? 
+                        (await dbClient.table('users').where('username', req.params.userId).update({username: req.body.username, first_name: req.body.firstname, last_name: req.body.lastname, password: hashPass }))[0] :
+                        (await dbClient.table('users').where('username', req.params.userId).update({username: req.body.username, first_name: req.body.firstname, last_name: req.body.lastname, password: hashPass, imageUrl: req.body.imageUrl}))[0]
+            res.statusCode = 201;
+            res.header('Location',`${req.baseUrl}/${id}` );
+            res.send();
+        }catch(e){
+            res.statusCode = 500;
+            res.send();
+        }
+    }
+    else{
+        postUser(req, res);
     }
 }
