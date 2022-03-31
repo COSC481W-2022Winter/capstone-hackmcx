@@ -14,6 +14,10 @@ export default function CaptionRating({
 	const [rated, setRated] = useState(false);
 
 	const [isLoggedIn, setIsLoggedIn] = useState(true);
+	const token = 'myToken';
+	let header = {
+		headers: { Authorization: 'Bearer ' + token },
+	};
 
 	const submitRating = (value) => {
 		setRated(true);

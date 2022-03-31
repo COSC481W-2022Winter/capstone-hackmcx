@@ -8,7 +8,10 @@ import { Avatar, Box, IconButton, Typography } from '@mui/material';
 
 export default function AppNav() {
 	const [isLoggedIn, setIsLoggedIn] = useState(true);
-
+	const token = 'myToken';
+	let header = {
+		headers: { Authorization: 'Bearer ' + token },
+	};
 	return (
 		<React.Fragment>
 			<AppBar position='fixed'>

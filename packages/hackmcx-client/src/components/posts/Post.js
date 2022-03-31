@@ -16,6 +16,10 @@ export default function Post(props) {
 	const [post, setPost] = useState({});
 	const [isLoaded, setIsLoaded] = useState(false);
 	const [isLoggedIn, setIsLoggedIn] = useState(true);
+	const token = 'myToken';
+	let header = {
+		headers: { Authorization: 'Bearer ' + token },
+	};
 
 	let { postId } = useParams();
 
