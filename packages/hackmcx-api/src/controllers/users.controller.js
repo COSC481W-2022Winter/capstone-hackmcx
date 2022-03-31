@@ -110,15 +110,21 @@ export async function updateUsersByUserId(req, res){
         })
 
     if(userExists){
-        try{
-            let id =  !req.body.imageUrl ?
-                        (await dbClient.table('users').where('username', req.params.userId).update({username: req.body.username, first_name: req.body.firstname, last_name: req.body.lastname, password: hashPass }))[0] :
-                        (await dbClient.table('users').where('username', req.params.userId).update({username: req.body.username, first_name: req.body.firstname, last_name: req.body.lastname, password: hashPass, imageUrl: req.body.imageUrl}))[0]
-            res.statusCode = 201;
-            res.header('Location',`${req.baseUrl}/${id}` );
-            res.send();
-        }catch(e){
-            res.statusCode = 500;
+        if (req.user === req.params.userId) {
+            try{
+                let id =  !req.body.imageUrl ?
+                            (await dbClient.table('users').where('username', req.params.userId).update({username: req.body.username, first_name: req.body.firstname, last_name: req.body.lastname, password: hashPass }))[0] :
+                            (await dbClient.table('users').where('username', req.params.userId).update({username: req.body.username, first_name: req.body.firstname, last_name: req.body.lastname, password: hashPass, imageUrl: req.body.imageUrl}))[0]
+                res.statusCode = 201;
+                res.header('Location',`${req.baseUrl}/${id}` );
+                res.send();
+            }catch(e){
+                res.statusCode = 500;
+                res.send();
+            }
+        }
+        else {
+            res.statusCode = 403;
             res.send();
         }
     }
