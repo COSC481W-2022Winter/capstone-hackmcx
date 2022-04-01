@@ -7,6 +7,7 @@ import AppNav from "./AppNav";
 import Grid from "@material-ui/core/Grid";
 import UserProfile from './components/UserProfile';
 import Post from "./components/posts/Post";
+import Login from './components/Login'
 
 export default function App() {
 	return (
@@ -23,6 +24,7 @@ export default function App() {
 							<Route exact path="/user/:userId" element={<UserProfile/>}/>
 							<Route exact path="/posts/:postId" element={<Post/>}/>
 							<Route exact path="/error/404" element={<ErrorPage/>}/>
+							<Route exact path="/login" element={<Login/>}/>
 						</Routes>
 					</Grid>
 				</Grid>
