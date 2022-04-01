@@ -6,13 +6,19 @@ import LinkIcon from '@mui/icons-material/Link';
 import axios from 'axios';
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 const CreatePost = () => {
 	const [isLoggedIn, setIsLoggedIn] = useState(true);
-	const token = 'myToken';
+	// const token = 'myToken';
+	const token =
+		'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjoidXNlcm5hbWUxIiwiZXhwIjoxNjQ4NzczMDY0LCJpYXQiOjE2NDg3Njk0NjR9.F0OEyDo4UkoZBSDtUhG5_RoUDYF6UaZf0NtfCt3aSZ4';
 	let header = {
 		headers: { Authorization: 'Bearer ' + token },
 	};
+
+	const nav = useNavigate();
+
 	const [title, setTitle] = useState('');
 	const [imageUrl, setImageUrl] = useState('');
 	const [titleHelper, setTitleHelper] = useState('Please enter a valid title.');
@@ -51,15 +57,23 @@ const CreatePost = () => {
 			.post(`${process.env.REACT_APP_API_URL}/api/v1/posts`, {
 				title: title,
 				imageUrl: imageUrl,
+				Authorization: 'Bearer ' + token,
 			})
 			.then(
 				(response) => {
 					console.log(response);
 					setImageUrlError(false);
 					setTitleError(false);
+					alert('Successfull');
 				},
 				(error) => {
-					console.log(error);
+					if (error == 'Error: Request failed with status code 401') {
+						alert('Unauthorized action, redirecting you to the Log in Page');
+						nav(`/login/user`);
+					} else {
+						console.log(error);
+						alert('There was an error');
+					}
 				}
 			);
 	}

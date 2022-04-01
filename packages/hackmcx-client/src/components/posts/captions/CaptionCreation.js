@@ -3,6 +3,7 @@ import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 import Grid from '@material-ui/core/Grid';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 export default function CreateCaption({ postId, callback }) {
 	const [submitted, setSubmitted] = useState(false);
@@ -12,6 +13,7 @@ export default function CreateCaption({ postId, callback }) {
 	let header = {
 		headers: { Authorization: 'Bearer ' + token },
 	};
+	const nav = useNavigate();
 
 	const submit = () => {
 		axios
@@ -27,8 +29,13 @@ export default function CreateCaption({ postId, callback }) {
 					callback();
 				},
 				(error) => {
-					alert('Caption could not be created!');
-					console.log(error);
+					if (error == 'Error: Request failed with status code 401') {
+						alert('Unauthorized action, redirecting you to the Log in Page');
+						nav(`/login/user`);
+					} else {
+						alert('Caption could not be created!');
+						console.log(error);
+					}
 				}
 			);
 	};

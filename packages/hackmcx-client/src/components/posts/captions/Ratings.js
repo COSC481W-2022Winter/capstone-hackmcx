@@ -4,6 +4,8 @@ import Box from '@mui/material/Box';
 import StarIcon from '@mui/icons-material/Star';
 import axios from 'axios';
 import { useState } from 'react';
+import LoginMockUp from '../../LoginMockUp';
+import { useNavigate } from 'react-router-dom';
 
 export default function CaptionRating({
 	postId,
@@ -12,6 +14,8 @@ export default function CaptionRating({
 	callback,
 }) {
 	const [rated, setRated] = useState(false);
+
+	const nav = useNavigate();
 
 	const [isLoggedIn, setIsLoggedIn] = useState(true);
 	const token = 'myToken';
@@ -32,8 +36,12 @@ export default function CaptionRating({
 					callback();
 				},
 				(error) => {
-					alert('Evil alert! Caption could not be rated!');
-					console.log(error);
+					if (error == 'Error: Request failed with status code 401') {
+						alert('Unauthorized action, redirecting you to the Log in Page');
+						nav(`/login/user`);
+					} else {
+						alert('Caption could not be rated!');
+					}
 				}
 			);
 	};

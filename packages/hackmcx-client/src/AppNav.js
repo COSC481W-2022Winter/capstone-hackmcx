@@ -5,6 +5,7 @@ import { Link } from 'react-router-dom';
 import Button from '@material-ui/core/Button';
 import { useState } from 'react';
 import { Avatar, Box, IconButton, Typography } from '@mui/material';
+import axios from 'axios';
 
 export default function AppNav() {
 	const [isLoggedIn, setIsLoggedIn] = useState(true);
@@ -12,6 +13,7 @@ export default function AppNav() {
 	let header = {
 		headers: { Authorization: 'Bearer ' + token },
 	};
+
 	return (
 		<React.Fragment>
 			<AppBar position='fixed'>
