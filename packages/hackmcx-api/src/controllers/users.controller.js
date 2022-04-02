@@ -8,7 +8,7 @@ export async function getUsers(req, res){
         .select('username', 'first_name', 'last_name', 'imageUrl')
         .from('users')
         .then(results => res.send(results));
-}
+} 
 
 export async function getUsersByUserId(req, res){
     await dbClient

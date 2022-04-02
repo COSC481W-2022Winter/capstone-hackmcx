@@ -22,7 +22,7 @@ export default function AppNav(){
                             <Button variant='contained' sx={{ mt: 2 }} >Create Post</Button>
                         </Link>
                     </Box>
-                        <Link to={'/user/username1'}>
+                        <Link to={'/login'}>
                             <Button variant='contained' sx={{ mt: 2}}>Sign In</Button>
                         </Link>
                 </Toolbar>
