@@ -1,5 +1,5 @@
 import {dbClient} from '../db/db.js'
-import {isMissingOrWhitespace} from "../utils/validation.js";
+import {isMissingOrWhitespace, userValidation} from "../utils/validation.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 
@@ -25,40 +25,12 @@ export async function getUsersByUserId(req, res){
         })
 }
 
-function userValidation(req){
-    const emptyUsername = !req.body.username || /^\s*$/.test(req.body.username);
-    const emptyFirstName = !req.body.firstname || /^\s*$/.test(req.body.firstname);
-    const emptyLastName = !req.body.lastname || /^\s*$/.test(req.body.lastname);
-    const emptyPassword = !req.body.password || /^\s*$/.test(req.body.password);
-    const notPicture = !req.body.imageUrl || !/(https?:\/\/.*\.(?:png|jpg|gif|svg))/i.test(req.body.imageUrl);
-    const noGivenImageUrl = !req.body.imageUrl;
-
-    if(emptyUsername){
-        return "Username cannot be missing or blank.";
-    }
-    if(emptyFirstName){
-        return "First Name cannot be missing or blank.";
-    }
-    if(emptyLastName){
-        return "Last Name cannot be missing or blank.";
-    }
-    if(emptyPassword){
-        return "Password cannot be missing or blank.";
-    }
-    if(!noGivenImageUrl && notPicture){
-        return "Invalid image URL: Image url is invalid.";
-    }
-    else{
-        return 1;
-    }
-}
-
 export async function postUser(req, res){
     const validation = userValidation(req);
 
     if(validation != 1){
         res.statusCode = 400;
-        res.send(validation);
+        res.send({error: validation});
         return;
     }
 
@@ -88,7 +60,7 @@ export async function updateUsersByUserId(req, res){
 
     if(validation != 1){
         res.statusCode = 400;
-        res.send(validation);
+        res.send({error: validation});
         return;
     }
 
