@@ -33,7 +33,11 @@ function UserId(Component) {
         user: null,
         posts: [],
         error: null,
+        searchQuery: ""
     }
+
+    
+    
     
     componentDidMount() {
         fetch(`${process.env.REACT_APP_API_URL}/api/v1/users/${this.props.userId}`)
@@ -125,8 +129,6 @@ function UserId(Component) {
 
 <div className={useStyles.root}>
 
-<input accept="image/*" className={useStyles.input} id="icon-button-file" type="file" hidden/>
-<label htmlFor="icon-button-file">
   <IconButton color="primary" aria-label="upload picture" component="span" 
   style={{ "border-radius":"20px",background:"rgb(160 3 24)"}}
   // style={{background:"#a00318ad"}}
@@ -138,10 +140,9 @@ function UserId(Component) {
         "border-radius":"20px"
      }} />
   </IconButton>
-  <Typography variant="p" gutterBottom component="div"  style={{ "position": "relative", background:"rgb(160 3 24 / 64%)",marginTop: "-50px", "z-index":200, "text-align":"center", color:"white", "paddingBottom":"15px"}}>
-    Change Image
-      </Typography>
-</label>
+  {/* <Typography variant="p" gutterBottom component="div"  style={{ "position": "relative", background:"rgb(160 3 24 / 64%)",marginTop: "-70px", "z-index":200, "text-align":"center", color:"white", "paddingBottom":"15px"}}>
+    Change Image <br /> using update account
+      </Typography> */}
 </div>
 
     <Typography variant="h6" gutterBottom component="div"  style={{ marginTop: "20px" }}>

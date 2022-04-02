@@ -5,11 +5,14 @@ import Modal from "@material-ui/core/Modal";
 import Button from "@material-ui/core/Button";
 import Grid from '@mui/material/Grid';
 import TextField from '@mui/material/TextField';
+import { useForm } from "react-hook-form";
 
 
 // function rand() {
 //   return Math.round(Math.random() * 20) - 10;
 // }
+
+
 
 function getModalStyle() {
   const top = 50 ;
@@ -38,6 +41,22 @@ function SimpleModal(props) {
   // getModalStyle is not a pure function, we roll the style only on the first render
   const [modalStyle] = useState(getModalStyle);
   const [modalData, setData] = useState();
+
+  const { register, handleSubmit, watch, formState: { errors } } = useForm();
+//const onSubmit = data => console.log(data);
+const onSubmit = async (data) => {
+  const requestOptions = {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data)
+  };
+
+  const response = await fetch(`${process.env.REACT_APP_API_URL}/api/v1/users/${props.user.username}`, requestOptions);
+  const jsonData = await response.json();
+
+  console.log(jsonData);
+}
+
 
   const data = [
     {
@@ -79,6 +98,30 @@ function SimpleModal(props) {
       align={"center"}
       gutterBottom={false}
     />
+    <form onSubmit={handleSubmit(onSubmit)}>
+    <TextField
+      style={{}}
+      fullWidth={true}
+      placeholder={"Doe"}
+      margin={"normal"}
+      label={"username"}
+      //disabled
+      name={"username"}
+      color={"primary"}
+      InputProps={{
+        readOnly: true,
+      }}
+
+      multiline={false}
+      rows={1}
+      rowsMax={1}
+      type={"text"}
+      variant={"filled"}
+      //onChange={event => setValue(event.target.value)}
+      {...register("username")}
+      value={props.user.username}
+
+    />
     <TextField
       style={{}}
       fullWidth={true}
@@ -86,14 +129,18 @@ function SimpleModal(props) {
       placeholder={"Doe"}
       margin={"normal"}
       label={"User First Name"}
-      name={"User First Name"}
+      name={"firstname"}
       color={"primary"}
       multiline={false}
       rows={1}
       rowsMax={1}
       type={"text"}
       variant={"filled"}
-      value={props.user.first_name}
+      //onChange={event => setValue(event.target.value)}
+      defaultValue={props.user.first_name}
+      {...register("firstname")}
+
+
     />
     <TextField
       style={{}}
@@ -102,14 +149,54 @@ function SimpleModal(props) {
       placeholder={"Doe"}
       margin={"normal"}
       label={"User Last Name"}
-      name={"User Last Name"}
+      name={"last_name"}
       color={"primary"}
       multiline={false}
       rows={1}
       rowsMax={1}
       type={"text"}
       variant={"filled"}
-      value={props.user.last_name}
+      defaultValue={props.user.last_name}
+      {...register("last_name")}
+
+    />
+    <TextField
+      style={{}}
+      fullWidth={true}
+      helperText={"Enter/Edit the link to your profile picture"}
+      placeholder={"https://upload.wikimedia.org/wikipedia/commons/thumb/2/20/MJd1-.svg/100px-MJd1-.svg.png"}
+      margin={"normal"}
+      label={"Profile Picture URL"}
+      name={"imageUrl"}
+      color={"primary"}
+      multiline={false}
+      rows={1}
+      rowsMax={1}
+      type={"text"}
+      variant={"filled"}
+      defaultValue={props.user.imageUrl}
+      {...register("imageUrl")}
+
+    />
+    <TextField
+      style={{}}
+      fullWidth={true}
+      helperText={"Enter new password"}
+      placeholder={"Doe"}
+      margin={"normal"}
+      label={"password"}
+      name={"password"}
+      color={"primary"}
+      multiline={false}
+      rows={1}
+      rowsMax={1}
+      type={"password"}
+      variant={"filled"}
+      //value={props.user.last_name}
+      //onChange={handleInputChanged(props.user.imageUrl)}
+      required
+      {...register("password")}
+
     />
     <Button
       style={{}}
@@ -122,9 +209,11 @@ function SimpleModal(props) {
       align={"center"}
       link={""}
       isIcon={false}
+      type="submit"
     >
       Update Details
     </Button>
+    </form>
   </Grid>          
           <div>
         </div>
