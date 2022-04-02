@@ -17,7 +17,16 @@ export default function CaptionRating({
 
 	const nav = useNavigate();
 
-	const [isLoggedIn, setIsLoggedIn] = useState(true);
+	let visibility = null;
+
+	if (
+		localStorage.getItem('authToken') != null &&
+		localStorage.getItem('tokenExpires') > Date.now()
+	) {
+		visibility = true;
+	} else {
+		visibility = false;
+	}
 	const token = 'myToken';
 	let header = {
 		headers: { Authorization: 'Bearer ' + token },
@@ -48,7 +57,7 @@ export default function CaptionRating({
 
 	return (
 		<Box sx={{ width: 200, display: 'flex', alignItems: 'center' }}>
-			{isLoggedIn === false && (
+			{visibility == false && (
 				<Rating
 					name='caption-rating'
 					precision={0.5}
@@ -60,7 +69,7 @@ export default function CaptionRating({
 					emptyIcon={<StarIcon style={{ opacity: 0.55 }} fontSize='inherit' />}
 				/>
 			)}
-			{isLoggedIn === true && (
+			{visibility === true && (
 				<Rating
 					name='caption-rating'
 					precision={0.5}

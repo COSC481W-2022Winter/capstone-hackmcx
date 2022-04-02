@@ -15,7 +15,16 @@ import ErrorPage from '../ErrorPage';
 export default function Post(props) {
 	const [post, setPost] = useState({});
 	const [isLoaded, setIsLoaded] = useState(false);
-	const [isLoggedIn, setIsLoggedIn] = useState(true);
+	let visibility = null;
+
+	if (
+		localStorage.getItem('authToken') != null &&
+		localStorage.getItem('tokenExpires') > Date.now()
+	) {
+		visibility = true;
+	} else {
+		visibility = false;
+	}
 	const token = 'myToken';
 	let header = {
 		headers: { Authorization: 'Bearer ' + token },
@@ -100,7 +109,9 @@ export default function Post(props) {
 					);
 				})}
 				<Grid item xs={12} justifyContent={'center'}>
-					{isLoggedIn && <CreateCaption postId={postId} callback={fetchPost} />}
+					{visibility == true && (
+						<CreateCaption postId={postId} callback={fetchPost} />
+					)}
 				</Grid>
 			</Grid>
 		);

@@ -3,12 +3,21 @@ import AppBar from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
 import { Link } from 'react-router-dom';
 import Button from '@material-ui/core/Button';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Avatar, Box, IconButton, Typography } from '@mui/material';
 import axios from 'axios';
 
 export default function AppNav() {
-	const [isLoggedIn, setIsLoggedIn] = useState(true);
+	let visibility = null;
+
+	if (
+		localStorage.getItem('authToken') != null &&
+		localStorage.getItem('tokenExpires') > Date.now()
+	) {
+		visibility = true;
+	} else {
+		visibility = false;
+	}
 	const token = 'myToken';
 	let header = {
 		headers: { Authorization: 'Bearer ' + token },
@@ -28,7 +37,7 @@ export default function AppNav() {
 					</Link>
 					<Box sx={{ flexGrow: 1 }} />
 					<Box sx={{ marginRight: 2 }}>
-						{isLoggedIn && (
+						{visibility == true && (
 							<Link to={'/posts/create'}>
 								<Button variant='contained' sx={{ mt: 2 }}>
 									Create Post
@@ -36,14 +45,14 @@ export default function AppNav() {
 							</Link>
 						)}
 					</Box>
-					{isLoggedIn === false && (
+					{visibility == false && (
 						<Link to={'/user/username1'}>
 							<Button variant='contained' sx={{ mt: 2 }}>
 								Sign In
 							</Button>
 						</Link>
 					)}
-					{isLoggedIn && (
+					{visibility == true && (
 						<Link to={'/user/username1'}>
 							<Button variant='contained' sx={{ mt: 2 }}>
 								Profile

@@ -9,14 +9,20 @@ import { Link } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 
 const CreatePost = () => {
-	const [isLoggedIn, setIsLoggedIn] = useState(true);
-	// const token = 'myToken';
-	const token =
-		'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjoidXNlcm5hbWUxIiwiZXhwIjoxNjQ4NzczMDY0LCJpYXQiOjE2NDg3Njk0NjR9.F0OEyDo4UkoZBSDtUhG5_RoUDYF6UaZf0NtfCt3aSZ4';
+	let visibility = null;
+
+	if (
+		localStorage.getItem('authToken') != null &&
+		localStorage.getItem('tokenExpires') > Date.now()
+	) {
+		visibility = true;
+	} else {
+		visibility = false;
+	}
+	const token = 'myToken';
 	let header = {
 		headers: { Authorization: 'Bearer ' + token },
 	};
-
 	const nav = useNavigate();
 
 	const [title, setTitle] = useState('');

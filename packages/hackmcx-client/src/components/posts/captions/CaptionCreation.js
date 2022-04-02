@@ -8,11 +8,21 @@ import { useNavigate } from 'react-router-dom';
 export default function CreateCaption({ postId, callback }) {
 	const [submitted, setSubmitted] = useState(false);
 	const [caption, setCaption] = useState('');
-	const [isLoggedIn, setIsLoggedIn] = useState(true);
+	let visibility = null;
+
+	if (
+		localStorage.getItem('authToken') != null &&
+		localStorage.getItem('tokenExpires') > Date.now()
+	) {
+		visibility = true;
+	} else {
+		visibility = false;
+	}
 	const token = 'myToken';
 	let header = {
 		headers: { Authorization: 'Bearer ' + token },
 	};
+
 	const nav = useNavigate();
 
 	const submit = () => {
