@@ -34,8 +34,6 @@ const Login = () =>  {
 
     }));
 
-    const [username, setUsername] = useState('');
-	const [password, setPassword] = useState('');
 	const [usernameHelper, setUsernameHelper] = useState("Username cannot be empty.");
 	const [passwordHelper, setPasswordHelper] = useState("Password cannot be empty.");
 	const [passwordError, setPasswordError] = useState(true);
@@ -80,12 +78,11 @@ const onSubmit = async (data) => {
 			setUsernameError(true);
 			setUsernameHelper("Username cannot be empty.")
 		}
-        else if (/\s/.test(val)) {
-            setUsernameError(true);
+    else if (/\s/.test(val)) {
+      setUsernameError(true);
 			setUsernameHelper("Username cannot contain spaces.")
         }
 		else{
-			setUsername(val);
 			setUsernameError(false);
 			setUsernameHelper("")
 		} 
@@ -96,16 +93,15 @@ const onSubmit = async (data) => {
 			setPasswordError(true);
 			setPasswordHelper("Password cannot be empty.")
 		} 
-        else if (/\s/.test(val)) {
-            setPasswordError(true);
+    else if (/\s/.test(val)) {
+      setPasswordError(true);
 			setPasswordHelper("Password cannot contain spaces.")
-        }
+    }
 		else if (/^[0-9]*$/.test(val) || /^[a-zA-Z]*$/.test(val) || val.length < 8) {
 			setPasswordError(true);
 			setPasswordHelper("Password is not strong enough.")
 		}
 		else{
-			setPassword(val);
 			setPasswordError(false);
 			setPasswordHelper("")
 		}
@@ -118,8 +114,6 @@ const onSubmit = async (data) => {
 
     }
   
-  
-
     return (
        <div>
   <Grid
@@ -159,7 +153,6 @@ const onSubmit = async (data) => {
       </Grid>
       <Grid item paddingY={1}>
         <TextField
-          //error={usernameError}
           fullWidth
           variant="filled"
           color="primary"
@@ -168,15 +161,13 @@ const onSubmit = async (data) => {
           name="username"
           required
           autoFocus
-          //onChange={(e) => validationUsername(e.target.value)}
           helperText={usernameHelper}
-          {...register("username")}
+          {...register("username", { onChange: (e) => validationUsername(e.target.value) }  )}
         />
       </Grid>
 
       <Grid item paddingY={1}>
         <TextField
-          //error={passwordError}
           fullWidth
           variant="filled"
           color="primary"
@@ -184,26 +175,16 @@ const onSubmit = async (data) => {
           label="password"
           name="password"
           required
-          //onChange={(e) => validationPassword(e.target.value)}
           helperText={passwordHelper}
-          {...register("password")}
+          {...register("password", { onChange: (e) => validationPassword(e.target.value) })}
 
         />
       </Grid>
 
       <Grid item paddingY={1}>
-        {/* <Button
-          fullWidth
-          size="medium"
-          variant="contained"
-          color="primary"
-          //disabled={usernameError || passwordError}
-          //onClick={() => login function}
-        >
-          Login
-        </Button> */}
         <Button
       style={{}}
+      disabled={usernameError || passwordError}
       variant={"contained"}
       color="primary"
       size={"large"}
