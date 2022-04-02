@@ -6,6 +6,7 @@ import Button from "@material-ui/core/Button";
 import Grid from '@mui/material/Grid';
 import TextField from '@mui/material/TextField';
 import { useForm } from "react-hook-form";
+import { useNavigate } from "react-router-dom";
 
 
 // function rand() {
@@ -41,20 +42,24 @@ function SimpleModal(props) {
   // getModalStyle is not a pure function, we roll the style only on the first render
   const [modalStyle] = useState(getModalStyle);
   const [modalData, setData] = useState();
+  const navigate = useNavigate();
 
   const { register, handleSubmit, watch, formState: { errors } } = useForm();
 //const onSubmit = data => console.log(data);
 const onSubmit = async (data) => {
   const requestOptions = {
       method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json',
+      "Authorization": "Bearer "+ localStorage.getItem("authToken")+""},
       body: JSON.stringify(data)
   };
 
   const response = await fetch(`${process.env.REACT_APP_API_URL}/api/v1/users/${props.user.username}`, requestOptions);
-  const jsonData = await response.json();
+  const jsonData = await response.status;
 
   console.log(jsonData);
+  window.location.href=window.location.href
+  navigate(`/user/${props.user.username}`);
 }
 
 
@@ -157,7 +162,7 @@ const onSubmit = async (data) => {
       type={"text"}
       variant={"filled"}
       defaultValue={props.user.last_name}
-      {...register("last_name")}
+      {...register("lastname")}
 
     />
     <TextField

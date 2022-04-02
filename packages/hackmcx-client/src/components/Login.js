@@ -63,7 +63,7 @@ const onSubmit = async (data) => {
       console.log(jsonData.token);
        authObject.token=jsonData.token;
        authObject.expires=Date.now()+9000;
-       localStorage.setItem("authToken",JSON.stringify(jsonData.token));
+       localStorage.setItem("authToken",(jsonData.token));
        localStorage.setItem("tokenExpires",Date.now()+(2.5*60*60*1000)); //2.5hrs
        navigate("/");
     
