@@ -108,7 +108,7 @@ const onSubmit = async (data) => {
 	}
 
     if(localStorage.getItem("authToken")!=null && localStorage.getItem("tokenExpires")>Date.now()){
-    
+      //alert("Already logged in, redirecting...")
       navigate("/");
       window.location.href = "/";
 
