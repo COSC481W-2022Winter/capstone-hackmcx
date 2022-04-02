@@ -51,10 +51,14 @@ const CreatePost = () => {
 	//When the create post button is clicked, this function will be called.
 	function postRequest() {
 		axios
-			.post(`${process.env.REACT_APP_API_URL}/api/v1/posts`, {
-				title: title,
-				imageUrl: imageUrl,
-			})
+			.post(
+				`${process.env.REACT_APP_API_URL}/api/v1/posts`,
+				{
+					title: title,
+					imageUrl: imageUrl,
+				},
+				header
+			)
 			.then(
 				(response) => {
 					console.log(response);

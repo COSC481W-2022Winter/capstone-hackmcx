@@ -20,7 +20,8 @@ export default function CreateCaption({ postId, callback }) {
 		axios
 			.post(
 				`${process.env.REACT_APP_API_URL}/api/v1/posts/${postId}/captions`,
-				{ caption: caption }
+				{ caption: caption },
+				header
 			)
 			.then(
 				(response) => {

@@ -38,7 +38,8 @@ export default function CaptionRating({
 		axios
 			.post(
 				`${process.env.REACT_APP_API_URL}/api/v1/posts/${postId}/captions/${captionId}/_rate`,
-				{ rating: value / 5 }
+				{ rating: value / 5 },
+				header
 			)
 			.then(
 				(response) => {
