@@ -6,40 +6,45 @@ import LinkIcon from '@mui/icons-material/Link';
 import axios from 'axios';
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 const CreatePost = () => {
+	const nav = useNavigate();
+
 	const [title, setTitle] = useState('');
 	const [imageUrl, setImageUrl] = useState('');
-	const [titleHelper, setTitleHelper] = useState("Please enter a valid title.");
-	const [urlHelper, setURLHelper] = useState("Image URL cannot be empty.");
+	const [titleHelper, setTitleHelper] = useState('Please enter a valid title.');
+	const [urlHelper, setURLHelper] = useState('Image URL cannot be empty.');
 	const [imageUrlError, setImageUrlError] = useState(true);
 	const [titleError, setTitleError] = useState(true);
+
+	const token = localStorage.getItem('authToken');
+	let header = {
+		headers: { Authorization: 'Bearer ' + token },
+	};
 
 	function validationTitle(val) {
 		if (!val || val === '' || /^\s*$/.test(val)) {
 			setTitleError(true);
-			setTitleHelper("Please enter a valid title.")
-		}
-		else{
+			setTitleHelper('Please enter a valid title.');
+		} else {
 			setTitle(val);
 			setTitleError(false);
-			setTitleHelper("")
-		} 
+			setTitleHelper('');
+		}
 	}
 
 	function validationImageURL(val) {
 		if (!val || val === '') {
 			setImageUrlError(true);
-			setURLHelper("Image URL cannot be empty.")
-		} 
-		else if (!/(https?:\/\/.*\.(?:png|jpg|gif|svg))/i.test(val)) {
+			setURLHelper('Image URL cannot be empty.');
+		} else if (!/(https?:\/\/.*\.(?:png|jpg|gif|svg))/i.test(val)) {
 			setImageUrlError(true);
-			setURLHelper("Image URL is not a valid URL")
-		}
-		else{
+			setURLHelper('Image URL is not a valid URL');
+		} else {
 			setImageUrl(val);
 			setImageUrlError(false);
-			setURLHelper("")
+			setURLHelper('');
 		}
 	}
 
@@ -57,7 +62,12 @@ const CreatePost = () => {
 					setTitleError(false);
 				},
 				(error) => {
-					console.log(error);
+					if (error == 'Error: Request failed with status code 401') {
+						alert('Unauthorized action, redirecting you to the Log in Page');
+						nav(`/login`);
+					} else {
+						alert('Caption could not be rated!');
+					}
 				}
 			);
 	}
@@ -81,7 +91,7 @@ const CreatePost = () => {
 							type='string'
 							label='Post Title'
 							onChange={(e) => validationTitle(e.target.value)}
-							helperText = {titleHelper}
+							helperText={titleHelper}
 						/>
 					</Grid>
 				</Grid>
@@ -98,7 +108,7 @@ const CreatePost = () => {
 							type='url'
 							label='Image URL'
 							onChange={(e) => validationImageURL(e.target.value)}
-							helperText = {urlHelper}
+							helperText={urlHelper}
 						/>
 					</Grid>
 				</Grid>
@@ -109,10 +119,10 @@ const CreatePost = () => {
 					size='medium'
 					variant='contained'
 					color='secondary'
-					disabled = {(titleError || imageUrlError)}
+					disabled={titleError || imageUrlError}
 					onClick={() => postRequest()}
-					component = {Link}
-					to="/">
+					component={Link}
+					to='/'>
 					Create Post
 				</Button>
 			</Grid>

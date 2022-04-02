@@ -2,14 +2,19 @@ import * as React from 'react';
 import Rating from '@mui/material/Rating';
 import Box from '@mui/material/Box';
 import StarIcon from '@mui/icons-material/Star';
-import axios from "axios";
-import {useState} from "react";
+import axios from 'axios';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-export default function CaptionRating({postId, captionId, average_rating, callback}) {
-    const [rated, setRated] = useState(false)
+export default function CaptionRating({
+	postId,
+	captionId,
+	average_rating,
+	callback,
+}) {
+	const [rated, setRated] = useState(false);
 
-    const nav = useNavigate();
+	const nav = useNavigate();
 
 	let visibility = null;
 
@@ -28,7 +33,7 @@ export default function CaptionRating({postId, captionId, average_rating, callba
 		headers: { Authorization: 'Bearer ' + token },
 	};
 
-    const submitRating = (value) => {
+	const submitRating = (value) => {
 		setRated(true);
 		axios
 			.post(
@@ -43,7 +48,7 @@ export default function CaptionRating({postId, captionId, average_rating, callba
 				(error) => {
 					if (error == 'Error: Request failed with status code 401') {
 						alert('Unauthorized action, redirecting you to the Log in Page');
-						nav(`/login/user`);
+						nav(`/login`);
 					} else {
 						alert('Caption could not be rated!');
 					}
@@ -51,7 +56,7 @@ export default function CaptionRating({postId, captionId, average_rating, callba
 			);
 	};
 
-    return (
+	return (
 		<Box sx={{ width: 200, display: 'flex', alignItems: 'center' }}>
 			{visibility == false && (
 				<Rating
