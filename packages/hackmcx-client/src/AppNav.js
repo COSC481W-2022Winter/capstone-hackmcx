@@ -47,12 +47,21 @@ export default function AppNav() {
 						</Link>
 					)}
 					{visibility == true && (
-						<Link to={'/user/username1'}>
+						<Link to={'user/' + localStorage.getItem('username')}>
 							<Button variant='contained' sx={{ mt: 2 }}>
 								Profile
 							</Button>
 						</Link>
 					)}
+					<Box sx={{ marginLeft: 2 }}>
+						{visibility == true && (
+							<Link to={'/logout'}>
+								<Button variant='contained' sx={{ mt: 2 }}>
+									Log out
+								</Button>
+							</Link>
+						)}
+					</Box>
 				</Toolbar>
 			</AppBar>
 			<Toolbar />
