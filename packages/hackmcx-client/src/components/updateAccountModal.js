@@ -7,13 +7,11 @@ import Grid from '@mui/material/Grid';
 import TextField from '@mui/material/TextField';
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
-
+import Alert from '@mui/material/Alert';
 
 // function rand() {
 //   return Math.round(Math.random() * 20) - 10;
 // }
-
-
 
 function getModalStyle() {
   const top = 50 ;
@@ -70,6 +68,7 @@ const onSubmit = async (data) => {
     },
   ];
   const CustomModal = () => {
+    if(localStorage.getItem("authToken")!=null && localStorage.getItem("tokenExpires")>Date.now()){
     return modalData ? (
       <Modal
         aria-labelledby="simple-modal-title"
@@ -226,6 +225,10 @@ const onSubmit = async (data) => {
         </div>
       </Modal>
     ) : null;
+    }
+    else{
+      return modalData?(<Alert severity="error">Please login to update account details!</Alert>):null;
+    }
   };
 
   const handleOpen = index => {

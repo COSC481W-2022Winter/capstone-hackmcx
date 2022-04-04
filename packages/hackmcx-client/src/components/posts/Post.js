@@ -83,6 +83,11 @@ export default function Post(props) {
 						<CardMedia component='img' image={post.imageUrl} alt={post.title} />
 					</Card>
 				</Grid>
+				<Grid item xs={12} justifyContent={'center'}>
+					{visibility == true && (
+						<CreateCaption postId={postId} callback={fetchPost} />
+					)}{' '}
+				</Grid>
 				{post.captions.map((caption) => {
 					return (
 						<React.Fragment>
@@ -107,11 +112,6 @@ export default function Post(props) {
 						</React.Fragment>
 					);
 				})}
-				<Grid item xs={12} justifyContent={'center'}>
-					{visibility == true && (
-						<CreateCaption postId={postId} callback={fetchPost} />
-					)}{' '}
-				</Grid>
 			</Grid>
 		);
 	}
