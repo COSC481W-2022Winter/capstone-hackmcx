@@ -3,7 +3,7 @@ import { Avatar, Grid, TextField, Button } from '@mui/material';
 import { makeStyles } from '@material-ui/core';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
-import authObject from './authToken';
+// import authObject from './authToken';
 import { useNavigate } from 'react-router-dom';
 
 const Login = () => {
@@ -64,8 +64,8 @@ const Login = () => {
 		} else {
 			alert('login success, redirecting...');
 			console.log(jsonData.token);
-			authObject.token = jsonData.token;
-			authObject.expires = Date.now() + 9000;
+			// authObject.token = jsonData.token;
+			// authObject.expires = Date.now() + 9000;
 			localStorage.setItem('authToken', jsonData.token);
 			localStorage.setItem('tokenExpires', Date.now() + 2.5 * 60 * 60 * 1000); //2.5hrs
 			localStorage.setItem('username', data.username);

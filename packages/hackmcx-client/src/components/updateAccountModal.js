@@ -186,7 +186,7 @@ const onSubmit = async (data) => {
       style={{}}
       fullWidth={true}
       helperText={"Enter new password"}
-      placeholder={"Doe"}
+      placeholder={""}
       margin={"normal"}
       label={"password"}
       name={"password"}
