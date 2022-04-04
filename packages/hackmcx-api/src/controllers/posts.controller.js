@@ -50,8 +50,8 @@ export async function getPostById(req, res){
 export async function postPost(req, res){
     const notPicture = !isValidImageUrl(req.body.imageUrl);
     const emptyTitle = isMissingOrWhitespace(req.body.title);
-    const toLongImageUrl = req.body.imageUrl.length > 2048;
-    const toLongTitle = req.body.title.length > 255;
+    const tooLongImageUrl = req.body.imageUrl.length > 2048;
+    const tooLongTitle = req.body.title.length > 255;
 
     if(notPicture){
         res.statusCode = 400;
@@ -67,14 +67,14 @@ export async function postPost(req, res){
         return
     }
 
-    if(toLongImageUrl){
+    if(tooLongImageUrl){
         res.statusCode = 400;
         res.send({error: "Image URL is too long."});
 
         return
     }
 
-    if(toLongTitle){
+    if(tooLongTitle){
         res.statusCode = 400;
         res.send({error: "Title is too long."});
 

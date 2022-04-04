@@ -17,24 +17,24 @@ export function userValidation(req){
     const notPicture = !isValidImageUrl(req.body.imageUrl);
     const noGivenImageUrl = !req.body.imageUrl;
 
-    const usernameToLong = req.body.username.length > 255;
-    const firstNameToLong = req.body.firstname.length > 255;
-    const lastNameToLong = req.body.lastname.length > 255;
-    const imageUrlToLong = req.body.imageUrl.length > 2048;
+    const usernameTooLong = req.body.username.length > 255;
+    const firstNameTooLong = req.body.firstname.length > 255;
+    const lastNameTooLong = req.body.lastname.length > 255;
+    const imageUrlTooLong = req.body.imageUrl.length > 2048;
 
-    if(usernameToLong){
+    if(usernameTooLong){
         return "Username is too long.";
     }
 
-    if(firstNameToLong){
+    if(firstNameTooLong){
         return "First name is too long.";
     }
 
-    if(lastNameToLong){
+    if(lastNameTooLong){
         return "Last name is too long.";
     }
 
-    if(imageUrlToLong){
+    if(imageUrlTooLong){
         return "Image URL is too long.";
     }
 

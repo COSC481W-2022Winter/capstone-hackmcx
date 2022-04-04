@@ -18,7 +18,7 @@ export async function getCaptions(req, res){
 
 export async function postCaptions(req, res){
     const emptyCaption = isMissingOrWhitespace(req.body.caption);
-    const toLongCaption = req.body.caption.length > 2048;
+    const tooLongCaption = req.body.caption.length > 2048;
 
     if (emptyCaption){
         res.statusCode = 400;
@@ -27,9 +27,9 @@ export async function postCaptions(req, res){
         return
     }
 
-    if (toLongCaption){
+    if (tooLongCaption){
         res.statusCode = 400;
-        res.send({error: "Caption to long."});
+        res.send({error: "Caption too long."});
 
         return
     }
