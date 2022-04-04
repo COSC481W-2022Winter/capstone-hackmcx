@@ -1,4 +1,5 @@
 import {dbClient} from '../db/db.js'
+import {isMissingOrWhitespace} from "../utils/validation.js";
 
 export async function getCaptions(req, res){
     dbClient
@@ -16,11 +17,19 @@ export async function getCaptions(req, res){
 }
 
 export async function postCaptions(req, res){
-    const emptyCaption = !req.body.caption || /^\s*$/.test(req.body.caption);
+    const emptyCaption = isMissingOrWhitespace(req.body.caption);
+    const toLongCaption = req.body.caption.length > 2048;
 
     if (emptyCaption){
         res.statusCode = 400;
         res.send({error: "Caption cannot be missing or blank."});
+
+        return
+    }
+
+    if (toLongCaption){
+        res.statusCode = 400;
+        res.send({error: "Caption to long."});
 
         return
     }
