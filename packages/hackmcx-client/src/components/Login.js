@@ -81,9 +81,6 @@ const Login = () => {
 		if (!val || val === '' || /^\s*$/.test(val)) {
 			setUsernameError(true);
 			setUsernameHelper('Username cannot be empty.');
-		} else if (/\s/.test(val)) {
-			setUsernameError(true);
-			setUsernameHelper('Username cannot contain spaces.');
 		} else {
 			setUsernameError(false);
 			setUsernameHelper('');
@@ -94,16 +91,6 @@ const Login = () => {
 		if (!val || val === '') {
 			setPasswordError(true);
 			setPasswordHelper('Password cannot be empty.');
-		} else if (/\s/.test(val)) {
-			setPasswordError(true);
-			setPasswordHelper('Password cannot contain spaces.');
-		} else if (
-			/^[0-9]*$/.test(val) ||
-			/^[a-zA-Z]*$/.test(val) ||
-			val.length < 8
-		) {
-			setPasswordError(true);
-			setPasswordHelper('Password is not strong enough.');
 		} else {
 			setPasswordError(false);
 			setPasswordHelper('');
