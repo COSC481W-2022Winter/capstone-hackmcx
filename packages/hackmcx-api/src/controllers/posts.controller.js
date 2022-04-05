@@ -1,4 +1,5 @@
 import {dbClient} from '../db/db.js'
+import {isMissingOrWhitespace, isValidImageUrl} from "../utils/validation.js";
 
 export async function getPosts(req, res){
     var finalResults;
@@ -47,8 +48,10 @@ export async function getPostById(req, res){
 }
 
 export async function postPost(req, res){
-    const notPicture = !req.body.imageUrl || !/(https?:\/\/.*\.(?:png|jpg|gif|svg))/i.test(req.body.imageUrl);
-    const emptyTitle = !req.body.title || /^\s*$/.test(req.body.title);
+    const notPicture = !isValidImageUrl(req.body.imageUrl);
+    const emptyTitle = isMissingOrWhitespace(req.body.title);
+    const tooLongImageUrl = req.body.imageUrl.length > 2048;
+    const tooLongTitle = req.body.title.length > 255;
 
     if(notPicture){
         res.statusCode = 400;
@@ -60,6 +63,20 @@ export async function postPost(req, res){
     if (emptyTitle){
         res.statusCode = 400;
         res.send({error: "Title cannot be missing or blank."});
+
+        return
+    }
+
+    if(tooLongImageUrl){
+        res.statusCode = 400;
+        res.send({error: "Image URL is too long."});
+
+        return
+    }
+
+    if(tooLongTitle){
+        res.statusCode = 400;
+        res.send({error: "Title is too long."});
 
         return
     }
