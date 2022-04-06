@@ -3,7 +3,7 @@ function seed(knex) {
         knex('captions').insert([
             {
                 id: 1,
-                caption: 'The last drop of a shampoo bottle',
+                caption: 'Extracting the last drop of shampoo',
                 post_id: 1,
                 average_rating: 0.9,
                 number_of_ratings: 180,
