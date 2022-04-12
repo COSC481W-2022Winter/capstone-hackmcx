@@ -14,13 +14,10 @@ export function userValidation(req){
     const emptyFirstName = isMissingOrWhitespace(req.body.firstname);
     const emptyLastName = isMissingOrWhitespace(req.body.lastname);
     const emptyPassword = isMissingOrWhitespace(req.body.password);
-    const notPicture = !isValidImageUrl(req.body.imageUrl);
-    const noGivenImageUrl = !req.body.imageUrl;
 
     const usernameTooLong = req.body.username.length > 255;
     const firstNameTooLong = req.body.firstname.length > 255;
     const lastNameTooLong = req.body.lastname.length > 255;
-    const imageUrlTooLong = req.body.imageUrl.length > 2048;
 
     if(usernameTooLong){
         return "Username is too long.";
@@ -34,10 +31,6 @@ export function userValidation(req){
         return "Last name is too long.";
     }
 
-    if(imageUrlTooLong){
-        return "Image URL is too long.";
-    }
-
     if(emptyUsername){
         return "Username cannot be missing or blank.";
     }
@@ -49,9 +42,6 @@ export function userValidation(req){
     }
     if(emptyPassword){
         return "Password cannot be missing or blank.";
-    }
-    if(!noGivenImageUrl && notPicture){
-        return "Invalid image URL: Image url is invalid.";
     }
     else{
         return 1;

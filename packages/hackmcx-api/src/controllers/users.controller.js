@@ -5,14 +5,14 @@ import jwt from "jsonwebtoken";
 
 export async function getUsers(req, res){
     await dbClient
-        .select('username', 'first_name', 'last_name', 'imageUrl')
+        .select('username', 'first_name', 'last_name', 'imageData')
         .from('users')
         .then(results => res.send(results));
 } 
 
 export async function getUsersByUserId(req, res){
     await dbClient
-        .select('username', 'first_name', 'last_name', 'imageUrl')
+        .select('username', 'first_name', 'last_name', 'imageData')
         .from('users')
         .where('username', req.params.userId)
         .then(results => {
@@ -39,7 +39,7 @@ export async function postUser(req, res){
     try{
         let id =  !req.body.imageUrl ?
                     (await dbClient.table('users').insert({username: req.body.username, first_name: req.body.firstname, last_name: req.body.lastname, password: hashPass }))[0] :
-                    (await dbClient.table('users').insert({username: req.body.username, first_name: req.body.firstname, last_name: req.body.lastname, password: hashPass, imageUrl: req.body.imageUrl}))[0]
+                    (await dbClient.table('users').insert({username: req.body.username, first_name: req.body.firstname, last_name: req.body.lastname, password: hashPass, imageUrl: req.body.imageData}))[0]
         res.statusCode = 201;
         res.header('Location',`${req.baseUrl}/${id}` );
         res.send();
@@ -86,7 +86,7 @@ export async function updateUsersByUserId(req, res){
             try{
                 let id =  !req.body.imageUrl ?
                             (await dbClient.table('users').where('username', req.params.userId).update({username: req.body.username, first_name: req.body.firstname, last_name: req.body.lastname, password: hashPass }))[0] :
-                            (await dbClient.table('users').where('username', req.params.userId).update({username: req.body.username, first_name: req.body.firstname, last_name: req.body.lastname, password: hashPass, imageUrl: req.body.imageUrl}))[0]
+                            (await dbClient.table('users').where('username', req.params.userId).update({username: req.body.username, first_name: req.body.firstname, last_name: req.body.lastname, password: hashPass, imageUrl: req.body.imageData}))[0]
                 res.statusCode = 201;
                 res.header('Location',`${req.baseUrl}/${id}` );
                 res.send();
