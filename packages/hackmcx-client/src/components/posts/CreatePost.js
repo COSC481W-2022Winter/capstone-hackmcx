@@ -21,8 +21,9 @@ const CreatePost = () => {
 	const [title, setTitle] = useState('');
 	const [imageUrl, setImageUrl] = useState('');
 	const [titleHelper, setTitleHelper] = useState('Please enter a valid title.');
-	const [urlHelper, setURLHelper] = useState('Image URL cannot be empty.');
-	const [imageUrlError, setImageUrlError] = useState(true);
+	//	const [urlHelper, setURLHelper] = useState('Image URL cannot be empty.');
+	//	const [imageUrlError, setImageUrlError] = useState(true);
+	const [uploadError, setUploadError] = useState(true);
 	const [titleError, setTitleError] = useState(true);
 	const [selectedFile, setSelectedFile] = useState(false);
 
@@ -46,23 +47,14 @@ const CreatePost = () => {
 		}
 	}
 
-	function validationImageURL(val) {
-		if (!val || val === '') {
-			setImageUrlError(true);
-			setURLHelper('Image URL cannot be empty.');
-		} else if (!/(https?:\/\/.*\.(?:png|jpg|gif|svg))/i.test(val)) {
-			setImageUrlError(true);
-			setURLHelper('Image URL is not a valid URL');
-		} else {
-			setImageUrl(val);
-			setImageUrlError(false);
-			setURLHelper('');
-		}
-	}
-
 	function onFileChange(e) {
 		// Update the state
 		// this.setState({ selectedFile: e.target.files[0] });
+		if (selectedFile != null) {
+			setUploadError(false);
+		} else {
+			setUploadError(true);
+		}
 		setSelectedFile(e.target.files[0]);
 	}
 
@@ -122,7 +114,7 @@ const CreatePost = () => {
 			.then(
 				(response) => {
 					console.log(response);
-					setImageUrlError(false);
+					//setImageUrlError(false);
 					setTitleError(false);
 				},
 				(error) => {
@@ -183,6 +175,7 @@ const CreatePost = () => {
 										variant='contained'
 										fullWidth
 										component='span'
+										onClick={() => onFileUpload()}
 										color='secondary'>
 										Upload Image
 									</Button>
@@ -226,7 +219,7 @@ const CreatePost = () => {
 					size='medium'
 					variant='contained'
 					color='secondary'
-					disabled={titleError || imageUrlError}
+					disabled={titleError || uploadError}
 					onClick={() => postRequest()}
 					component={Link}
 					to='/'>
