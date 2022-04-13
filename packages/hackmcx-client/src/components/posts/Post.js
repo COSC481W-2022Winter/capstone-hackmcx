@@ -67,7 +67,11 @@ export default function Post(props) {
 			<Grid container spacing={5} justifyContent='center' alignItems='center'>
 				<Grid item xs={12}>
 					<Card sx={{ padding: 2 }}>
-						<CardMedia component='img' image={post.imageUrl} alt={post.title} />
+						<CardMedia
+							component='img'
+							image={'data:image/png;base64,' + post.imageData}
+							alt={post.title}
+						/>
 					</Card>
 				</Grid>
 				<Grid item xs={12} justifyContent={'center'}>
@@ -80,7 +84,12 @@ export default function Post(props) {
 			<Grid container spacing={5} justifyContent='center' alignItems='center'>
 				<Grid item xs={12}>
 					<Card sx={{ padding: 2 }}>
-						<CardMedia component='img' image={post.imageUrl} alt={post.title} />
+						<CardMedia
+							component='img'
+							// image={post.imageUrl}
+							image={'data:image/png;base64,' + post.imageData}
+							alt={post.title}
+						/>
 					</Card>
 				</Grid>
 				<Grid item xs={12} justifyContent={'center'}>
