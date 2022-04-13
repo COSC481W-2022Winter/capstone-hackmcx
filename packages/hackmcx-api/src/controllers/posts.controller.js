@@ -4,7 +4,7 @@ import {isMissingOrWhitespace, isValidImageUrl} from "../utils/validation.js";
 export async function getPosts(req, res){
     var finalResults;
     await dbClient
-        .select('title', 'imageUrl', 'posts.createdAt', 'posts.id', 'caption')
+        .select('title', 'imageData', 'posts.createdAt', 'posts.id', 'caption')
         .from('posts')
         .leftOuterJoin('captions as c', function() {
           this.on('posts.id', '=', 'post_id')
@@ -24,7 +24,7 @@ export async function getPosts(req, res){
 export async function getPostById(req, res){
     var finalResults
     await dbClient
-        .select('title', 'imageUrl', 'createdAt', 'id')
+        .select('title', 'imageData', 'createdAt', 'id')
         .from('posts')
         .where('id', req.params.postId)
         .then(results => {
@@ -48,14 +48,13 @@ export async function getPostById(req, res){
 }
 
 export async function postPost(req, res){
-    const notPicture = !isValidImageUrl(req.body.imageUrl);
+    const noPicture = isMissingOrWhitespace(req.body.imageData);
     const emptyTitle = isMissingOrWhitespace(req.body.title);
-    const tooLongImageUrl = req.body.imageUrl.length > 2048;
     const tooLongTitle = req.body.title.length > 255;
 
-    if(notPicture){
+    if(noPicture){
         res.statusCode = 400;
-        res.send({error: "Invalid image URL: Image url is either missing or invalid."});
+        res.send({error: "No image uploaded."});
 
         return
     }
@@ -67,13 +66,6 @@ export async function postPost(req, res){
         return
     }
 
-    if(tooLongImageUrl){
-        res.statusCode = 400;
-        res.send({error: "Image URL is too long."});
-
-        return
-    }
-
     if(tooLongTitle){
         res.statusCode = 400;
         res.send({error: "Title is too long."});
@@ -81,7 +73,7 @@ export async function postPost(req, res){
         return
     }
 
-    let id = (await dbClient.table('posts').insert({imageUrl: req.body.imageUrl, title: req.body.title}))[0];
+    let id = (await dbClient.table('posts').insert({imageData: req.body.imageData, title: req.body.title}))[0];
     res.statusCode = 201;
     res.header('Location',`${req.baseUrl}/${id}` );
     res.send();
