@@ -9,8 +9,8 @@ function up (knex) {
 function down(knex){
     return knex.schema
         .alterTable('users', function (table){
-            table.string('username', 255).primary();
             table.string('password', 72).notNullable();
+            table.boolean('disable').defaultTo(false);
         });
 }
 
