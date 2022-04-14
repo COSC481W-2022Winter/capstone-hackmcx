@@ -1,5 +1,5 @@
 import React from 'react';
-import { Avatar, Grid, TextField, Button } from '@mui/material';
+import { Avatar, Grid, TextField, Button, Typography } from '@mui/material';
 import { makeStyles } from '@material-ui/core';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
@@ -97,6 +97,10 @@ const Login = () => {
 		}
 	}
 
+	function redirect() {
+		navigate('/createAccount')
+	}
+
 	if (
 		localStorage.getItem('authToken') != null &&
 		localStorage.getItem('tokenExpires') > Date.now()
@@ -189,6 +193,25 @@ const Login = () => {
 								isIcon={false}
 								type='submit'>
 								LOGIN
+							</Button>
+						</Grid>
+
+						<Grid item paddingY={1}>
+							<Typography
+								align={"center"} 
+							>
+								Don't have an account?
+							</Typography>
+						</Grid>
+						<Grid item paddingY={1}>
+							<Button
+								variant={'contained'}
+								color='primary'
+								size={'large'}
+								fullWidth={true}
+								align={'center'}
+								onClick={() => redirect()}>
+								CREATE ACCOUNT
 							</Button>
 						</Grid>
 					</div>
