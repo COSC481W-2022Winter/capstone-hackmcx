@@ -19,13 +19,14 @@ const CreatePost = () => {
 	const nav = useNavigate();
 
 	const [title, setTitle] = useState('');
-	const [imageUrl, setImageUrl] = useState('');
 	const [titleHelper, setTitleHelper] = useState('Please enter a valid title.');
-	//	const [urlHelper, setURLHelper] = useState('Image URL cannot be empty.');
-	//	const [imageUrlError, setImageUrlError] = useState(true);
+	const [uploadHelper, setUploadHelper] = useState('Must upload an image');
 	const [uploadError, setUploadError] = useState(true);
 	const [titleError, setTitleError] = useState(true);
 	const [selectedFile, setSelectedFile] = useState(false);
+	const [base64, setBase64] = useState('');
+
+	var B64 = 'testing';
 
 	const Input = styled('input')({
 		display: 'none',
@@ -47,74 +48,85 @@ const CreatePost = () => {
 		}
 	}
 
-	function onFileChange(e) {
+	function onFileChange(e, B64) {
 		// Update the state
 		// this.setState({ selectedFile: e.target.files[0] });
 		if (selectedFile != null) {
 			setUploadError(false);
+			setUploadHelper('');
+			setSelectedFile(e.target.files[0]);
+			var promise = getBase64(e.target.files[0]);
+			promise.then(function (result) {
+				// setBase64(result);
+
+				B64 = result.slice(22, result.length - 1);
+
+				alert(B64);
+			});
+			asyncCall(e.target.files[0]);
 		} else {
 			setUploadError(true);
+			setUploadError('Must upload an image');
 		}
-		setSelectedFile(e.target.files[0]);
+		// setSelectedFile(e.target.files[0]);
+
+		// getBase64(e.target.files[0]);
+	}
+	// function getBase64(file) {
+	// 	var reader = new FileReader();
+	// 	reader.readAsDataURL(file);
+	// 	reader.onload = function () {
+	// 		console.log(reader.result);
+	// 		setBase64(reader.result);
+
+	// 	};
+	// 	reader.onerror = function (error) {
+	// 		console.log('Error: ', error);
+	// 	};
+	// }
+
+	async function asyncCall(img) {
+		const result = await getBase64(img);
+		setBase64(result);
+	}
+
+	function getBase64(file) {
+		return new Promise(function (resolve, reject) {
+			var reader = new FileReader();
+			reader.onload = function () {
+				resolve(reader.result);
+			};
+			reader.onerror = reject;
+			reader.readAsDataURL(file);
+		});
 	}
 
 	function onFileUpload() {
-		// Create an object of formData
 		const formData = new FormData();
 
-		// Update the formData object
 		formData.append(
 			'myFile',
 			this.state.selectedFile,
 			this.state.selectedFile.name
 		);
 
-		// Details of the uploaded file
 		console.log(this.state.selectedFile);
-
-		// Request made to the backend api
-		// Send formData object
-		//axios.post('api/uploadfile', formData);
 	}
 
-	function fileData() {
-		if (selectedFile) {
-			return (
-				<div>
-					<h2>File Details:</h2>
-
-					<p>File Name: {selectedFile.name}</p>
-
-					<p>File Type: {selectedFile.type}</p>
-
-					<p>Last Modified: {selectedFile.lastModifiedDate.toDateString()}</p>
-				</div>
-			);
-		} else {
-			return (
-				<div>
-					<br />
-					<h4>Choose before Pressing the Upload button</h4>
-				</div>
-			);
-		}
-	}
-
-	//When the create post button is clicked, this function will be called.
 	function postRequest() {
+		alert(B64);
 		axios
 			.post(
 				`${process.env.REACT_APP_API_URL}/api/v1/posts`,
 				{
+					imageData: B64,
 					title: title,
-					imageUrl: imageUrl,
 				},
 				header
 			)
 			.then(
 				(response) => {
 					console.log(response);
-					//setImageUrlError(false);
 					setTitleError(false);
 				},
 				(error) => {
@@ -137,7 +149,7 @@ const CreatePost = () => {
 			alignItems={'stretch'}>
 			<Grid item xs={7}>
 				<Grid container direction={'row'} alignItems={'center'}>
-					<Grid item xs={11}>
+					<Grid item xs={12}>
 						<ImageIcon fontSize='large' />
 						<TextField
 							error={titleError}
@@ -157,19 +169,14 @@ const CreatePost = () => {
 					<Grid item xs={12}>
 						<Grid container direction={'row'} alignItems={'center'}>
 							<Grid item xs={12}>
-								{/* <input
-									type='file'
-									onChange={onFileChange}
-									id='contained-button-file'
-								/> */}
-
 								<label htmlFor='contained-button-file'>
 									<Input
 										accept='image/*'
 										id='contained-button-file'
 										multiple
 										type='file'
-										onChange={onFileChange}
+										helperText={uploadHelper}
+										onChange={(e) => onFileChange(e, B64)}
 									/>
 									<Button
 										variant='contained'
@@ -180,34 +187,8 @@ const CreatePost = () => {
 										Upload Image
 									</Button>
 									{selectedFile.name}
+									{uploadHelper}
 								</label>
-								{/* <label htmlFor='icon-button-file'>
-									<Input accept='image/*' id='icon-button-file' type='file' />
-									<IconButton
-										color='primary'
-										aria-label='upload picture'
-										component='span'>
-										<PhotoCamera />
-									</IconButton>
-								</label> */}
-								{/* <label htmlFor='contained-button-file'> */}
-								{/* <Button
-									//error={titleError}
-									accept='image/*'
-									id='icon-button-file'
-									type='file'
-									htmlFor='icon-button-file'
-									fullWidth
-									size='medium'
-									variant='contained'
-									color='secondary'
-									label='Image Upload'
-									onClick={onFileUpload}
-									//disabled={uploadOption}
-								>
-									Upload Image
-								</Button> */}
-								{/* </label> */}
 							</Grid>
 						</Grid>
 					</Grid>
@@ -220,7 +201,7 @@ const CreatePost = () => {
 					variant='contained'
 					color='secondary'
 					disabled={titleError || uploadError}
-					onClick={() => postRequest()}
+					onClick={() => postRequest(B64)}
 					component={Link}
 					to='/'>
 					Create Post
