@@ -35,13 +35,13 @@ export async function postUser(req, res){
     req.body.firstname.length > 255 && (error = "'firstname' is too long")
     req.body.lastname.length > 255 && (error = "'lastname' is too long")
     if (error !== null){
-        sendClientError(error)
+        sendClientError(res, error)
         return
     }
 
     try{
         if ((await dbClient.count().from('users').where('username', req.body.username)) > 0){
-            sendClientError("user already exists!")
+            sendClientError(res, "user already exists!")
             return
         }
 
@@ -67,7 +67,7 @@ export async function updateUsersByUserId(req, res){
     req.body.firstname.length > 255 && (error = "'firstname' is too long")
     req.body.lastname.length > 255 && (error = "'lastname' is too long")
     if (error !== null){
-        sendClientError(error)
+        sendClientError(res, error)
         return
     }
 
@@ -107,7 +107,7 @@ export async function postLogin(req, res) {
     isMissingOrWhitespace(req.body.password) && (error = "Password cannot be missing or blank.")
 
     if (error !== null ){
-        sendClientError(error)
+        sendClientError(res, error)
         return
     }
 
@@ -116,7 +116,7 @@ export async function postLogin(req, res) {
         .where('username', req.body.username);
 
     if (results < 1 || !await bcrypt.compare(req.body.password, results[0].password)) {
-        sendClientError("Invalid username password combination.")
+        sendClientError(res, "Invalid username password combination.")
         return;
     }
 
@@ -133,7 +133,7 @@ export async function updatePassword(req, res){
     let error = null
     isMissingOrWhitespace(req.body.password) && (error = "'password' cannot be missing or blank.")
     if (error !== null){
-        sendClientError(error)
+        sendClientError(res, error)
         return
     }
     try{
