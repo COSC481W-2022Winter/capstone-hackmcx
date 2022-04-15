@@ -1,5 +1,5 @@
 import {dbClient} from '../db/db.js'
-import {isMissingOrWhitespace, userValidation} from "../utils/validation.js";
+import {isMissingOrWhitespace} from "../utils/validation.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 
@@ -26,105 +26,97 @@ export async function getUsersByUserId(req, res){
 }
 
 export async function postUser(req, res){
-    const validation = userValidation(req);
-
-    if(validation != 1){
-        res.statusCode = 400;
-        res.send({error: validation});
-        return;
+    let error = null
+    isMissingOrWhitespace(req.body.username) && (error = "'username' cannot be missing or blank.")
+    isMissingOrWhitespace(req.body.fistname) && (error = "'firstname' cannot be missing or blank.")
+    isMissingOrWhitespace(req.body.lastname) && (error = "'lastname' cannot be missing or blank.")
+    isMissingOrWhitespace(req.body.password) && (error = "'password' cannot be missing or blank.")
+    req.body.username.length > 255 && (error = "'username' is too long")
+    req.body.firstname.length > 255 && (error = "'firstname' is too long")
+    req.body.lastname.length > 255 && (error = "'lastname' is too long")
+    if (error !== null){
+        sendClientError(error)
+        return
     }
 
-    const hashPass = await bcrypt.hash(req.body.password, 12);
-
     try{
+        if ((await dbClient.count().from('users').where('username', req.body.username)) > 0){
+            sendClientError("user already exists!")
+            return
+        }
+
+        let hashPass = await bcrypt.hash(req.body.password, await bcrypt.genSalt(12));
+
+        // TODO: Move to transaction...
+        await dbClient.table('accounts').insert({username: req.body.username, password: hashPass})
         let id =  !req.body.imageUrl ?
-                    (await dbClient.table('users').insert({username: req.body.username, first_name: req.body.firstname, last_name: req.body.lastname, password: hashPass }))[0] :
-                    (await dbClient.table('users').insert({username: req.body.username, first_name: req.body.firstname, last_name: req.body.lastname, password: hashPass, imageUrl: req.body.imageData}))[0]
+            (await dbClient.table('users').insert({username: req.body.username, first_name: req.body.firstname, last_name: req.body.lastname}))[0] :
+            (await dbClient.table('users').insert({username: req.body.username, first_name: req.body.firstname, last_name: req.body.lastname, imageUrl: req.body.imageData}))[0]
         res.statusCode = 201;
         res.header('Location',`${req.baseUrl}/${id}` );
         res.send();
-    }catch(e){
-        if(e.message.includes('Duplicate entry')){
-            res.statusCode = 400;
-            res.send({error: "Invalid Username: Username is already taken."});
-        }
-        else{
-           res.statusCode = 500;
-           res.send();
-        }
+    }catch (e){
+        res.sendStatus(500)
     }
 }
 
 export async function updateUsersByUserId(req, res){
-    const validation = userValidation(req);
+    let error = null
+    isMissingOrWhitespace(req.body.fistname) && (error = "'firstname' cannot be missing or blank.")
+    isMissingOrWhitespace(req.body.lastname) && (error = "'lastname' cannot be missing or blank")
+    req.body.firstname.length > 255 && (error = "'firstname' is too long")
+    req.body.lastname.length > 255 && (error = "'lastname' is too long")
+    if (error !== null){
+        sendClientError(error)
+        return
+    }
 
-    if(validation != 1){
-        res.statusCode = 400;
-        res.send({error: validation});
+    if (req.params.userId !== req.user){
+        res.sendStatus(403)
         return;
     }
 
-    const hashPass = await bcrypt.hash(req.body.password, 12);
-
-    let userExists = false;
-
-    await dbClient
-        .select('username', 'first_name', 'last_name', 'imageUrl')
-        .from('users')
-        .where('username', req.params.userId)
-        .then(results => {
-            if (results.length > 0){
-                userExists = true;
-            }
-            else{
-                userExists = false;
-            }
-        })
-
-    if(userExists){
-        if (req.user === req.params.userId) {
-            try{
-                let id =  !req.body.imageUrl ?
-                            (await dbClient.table('users').where('username', req.params.userId).update({username: req.body.username, first_name: req.body.firstname, last_name: req.body.lastname, password: hashPass }))[0] :
-                            (await dbClient.table('users').where('username', req.params.userId).update({username: req.body.username, first_name: req.body.firstname, last_name: req.body.lastname, password: hashPass, imageUrl: req.body.imageData}))[0]
-                res.statusCode = 201;
-                res.header('Location',`${req.baseUrl}/${id}` );
-                res.send();
-            }catch(e){
-                res.statusCode = 500;
-                res.send();
-            }
+    try{
+        if (dbClient.count().from('users').where('username', req.user) < 0){
+            res.sendStatus(404)
+            return;
         }
-        else {
-            res.statusCode = 403;
-            res.send();
-        }
-    }
-    else{
-        postUser(req, res);
+        let id =  !req.body.imageUrl ?
+            (await dbClient.table('users').where('username', req.params.userId)
+                .update({
+                    first_name: req.body.firstname,
+                    last_name: req.body.lastname
+                }))[0] :
+            (await dbClient.table('users').where('username', req.params.userId)
+                .update({
+                    first_name: req.body.firstname,
+                    last_name: req.body.lastname,
+                    imageUrl: req.body.imageData
+                }))[0]
+        res.statusCode = 201;
+        res.header('Location',`${req.baseUrl}/${id}` );
+        res.send();
+    }catch (e){
+        res.sendStatus(500)
     }
 }
 
 export async function postLogin(req, res) {
-    if (isMissingOrWhitespace(req.body.username)) {
-        res.statusCode = 400;
-        res.send({error: "Username cannot be missing or blank."});
+    let error = null
+    isMissingOrWhitespace(req.body.username) && (error = "Username cannot be missing or blank.");
+    isMissingOrWhitespace(req.body.password) && (error = "Password cannot be missing or blank.")
+
+    if (error !== null ){
+        sendClientError(error)
         return
     }
 
-    if (isMissingOrWhitespace(req.body.password)) {
-        res.statusCode = 400;
-        res.send({error: "Password cannot be missing or blank."});
-        return
-    }
-
-    const results = await dbClient.from('users')
+    const results = await dbClient.from('accounts')
         .select('password')
         .where('username', req.body.username);
 
     if (results < 1 || !await bcrypt.compare(req.body.password, results[0].password)) {
-        res.statusCode = 400;
-        res.send({error: "Invalid username password combination."});
+        sendClientError("Invalid username password combination.")
         return;
     }
 
@@ -135,4 +127,25 @@ export async function postLogin(req, res) {
 
     res.statusCode = 200
     res.send({token: wt})
+}
+
+export async function updatePassword(req, res){
+    let error = null
+    isMissingOrWhitespace(req.body.password) && (error = "'password' cannot be missing or blank.")
+    if (error !== null){
+        sendClientError(error)
+        return
+    }
+    try{
+        let hashPass = await bcrypt.hash(req.body.password, await bcrypt.genSalt(12));
+        await dbClient.table('accounts').where('username', req.user)
+            .update({password: hashPass})
+    }catch (e){
+        res.sendStatus(500)
+    }
+}
+
+function sendClientError(res, errorMessage){
+    res.statusCode = 400;
+    res.send({error: errorMessage})
 }
