@@ -28,7 +28,7 @@ export async function getUsersByUserId(req, res){
 export async function postUser(req, res){
     let error = null
     isMissingOrWhitespace(req.body.username) && (error = "'username' cannot be missing or blank.")
-    isMissingOrWhitespace(req.body.fistname) && (error = "'firstname' cannot be missing or blank.")
+    isMissingOrWhitespace(req.body.firstname) && (error = "'firstname' cannot be missing or blank.")
     isMissingOrWhitespace(req.body.lastname) && (error = "'lastname' cannot be missing or blank.")
     isMissingOrWhitespace(req.body.password) && (error = "'password' cannot be missing or blank.")
     req.body.username.length > 255 && (error = "'username' is too long")
@@ -62,7 +62,7 @@ export async function postUser(req, res){
 
 export async function updateUsersByUserId(req, res){
     let error = null
-    isMissingOrWhitespace(req.body.fistname) && (error = "'firstname' cannot be missing or blank.")
+    isMissingOrWhitespace(req.body.firstname) && (error = "'firstname' cannot be missing or blank.")
     isMissingOrWhitespace(req.body.lastname) && (error = "'lastname' cannot be missing or blank")
     req.body.firstname.length > 255 && (error = "'firstname' is too long")
     req.body.lastname.length > 255 && (error = "'lastname' is too long")
@@ -77,7 +77,7 @@ export async function updateUsersByUserId(req, res){
     }
 
     try{
-        if (dbClient.count().from('users').where('username', req.user) < 0){
+        if (dbClient.count().from('users').where('username', req.user) < 1){
             res.sendStatus(404)
             return;
         }
@@ -93,7 +93,7 @@ export async function updateUsersByUserId(req, res){
                     last_name: req.body.lastname,
                     imageUrl: req.body.imageData
                 }))[0]
-        res.statusCode = 201;
+        res.statusCode = 204;
         res.header('Location',`${req.baseUrl}/${id}` );
         res.send();
     }catch (e){
