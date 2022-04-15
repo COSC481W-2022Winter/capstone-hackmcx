@@ -146,6 +146,7 @@ export async function updatePassword(req, res){
         let hashPass = await bcrypt.hash(req.body.password, await bcrypt.genSalt(12));
         await dbClient.table('accounts').where('username', req.user)
             .update({password: hashPass})
+        res.sendStatus(204)
     }catch (e){
         res.sendStatus(500)
     }
