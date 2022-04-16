@@ -16,12 +16,12 @@ import Stack from '@mui/material/Stack';
 import { styled } from '@mui/material/styles';
 
 var B64;
-
+var extraChar;
 const CreatePost = () => {
 	const nav = useNavigate();
 	const [title, setTitle] = useState('');
 	const [titleHelper, setTitleHelper] = useState('Please enter a valid title.');
-	const [uploadHelper, setUploadHelper] = useState('Must upload an image');
+	const [uploadHelper, setUploadHelper] = useState('No image selected');
 	const [uploadError, setUploadError] = useState(true);
 	const [titleError, setTitleError] = useState(true);
 	const [selectedFile, setSelectedFile] = useState(false);
@@ -54,12 +54,13 @@ const CreatePost = () => {
 			setSelectedFile(e.target.files[0]);
 			var promise = getBase64(e.target.files[0]);
 			promise.then(function (result) {
-			B64 = result.slice(23, result.length - 1);
+				extraChar = result.slice(22,23);
+				B64 = result.slice(23, result.length);
 			});
 			asyncCall(e.target.files[0]);
 		} else {
 			setUploadError(true);
-			setUploadError('Must upload an image');
+			setUploadError('No image selected');
 		}
 	}
 
@@ -91,34 +92,43 @@ const CreatePost = () => {
 		console.log(this.state.selectedFile);
 	}
 
-	function postRequest(B64) {
+	function postRequest(B64,extraChar) {
+		if (selectedFile.type == 'image/png') {
+			B64 = extraChar + B64.slice(0, B64.length - 2);
+		}
 		axios
-			.post(
-				`${process.env.REACT_APP_API_URL}/api/v1/posts`,
-				{
-					imageData: B64,
-					title: title,
-				},
-				header
-			)
-			.then(
-				(response) => {
-					console.log(response);
-					setTitleError(false);
-				},
-				(error) => {
-					if (error == 'Error: Request failed with status code 401') {
-						alert('Unauthorized action, redirecting you to the Log in Page');
-						nav(`/login`);
+				.post(
+					`${process.env.REACT_APP_API_URL}/api/v1/posts`,
+					{
+						imageData: B64,
+						title: title,
+					},
+					header
+				)
+				.then(
+					(response) => {
+						console.log(response);
+						setTitleError(false);
+					},
+					(error) => {
+						if (error == 'Error: Request failed with status code 401') {
+							alert('Unauthorized action, redirecting you to the Log in Page');
+							nav(`/login`);
+						} else if (B64.length >= 1333336) {
+							alert('Image size must be less than or equal to 1 mb!');
+						} else {
+							alert('Post could not be created!');
+						}
 					}
-					else if(B64.length >= 1333336){
-						alert('Image size must be less than or equal to 1 mb!');
-					}
-					else {
-						alert('Post could not be created!');
-					}
-				}
-			);
+				);
+	}
+
+	function jpegOrNot(type) {
+		if (type === 'image/jpg' || 'image/jpeg') {
+			return 'jpeg  selected';
+		} else if (type === 'image/png') {
+			return 'png is not  supported, upload jpeg or jpg';
+		}
 	}
 
 	return (
@@ -167,6 +177,7 @@ const CreatePost = () => {
 										color='secondary'>
 										Upload Image
 									</Button>
+
 									{selectedFile.name}
 									{uploadHelper}
 								</label>
@@ -182,7 +193,7 @@ const CreatePost = () => {
 					variant='contained'
 					color='secondary'
 					disabled={titleError || uploadError}
-					onClick={() => postRequest(B64)}
+					onClick={() => postRequest(B64,extraChar)}
 					component={Link}
 					to='/'>
 					Create Post
