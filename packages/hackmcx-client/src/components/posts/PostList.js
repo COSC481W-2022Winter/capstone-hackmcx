@@ -35,7 +35,7 @@ export default function PostList(){
 								>
 									<CardMedia
 										component='img'
-										image={post.imageUrl}
+										image={"data:image/png;base64," + post.imageData}
 										alt={post.title}
 										title={post.title}
 									/>
