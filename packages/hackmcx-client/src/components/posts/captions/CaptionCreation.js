@@ -38,8 +38,6 @@ export default function CreateCaption({ postId, callback }) {
 					}
 				}
 			);
-
-			window.location.href = window.location.href;
 	};
 
 	return (
