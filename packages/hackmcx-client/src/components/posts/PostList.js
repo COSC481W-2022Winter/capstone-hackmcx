@@ -16,9 +16,9 @@ export default function PostList(){
 				setIsLoaded(true)
 			})
 			.catch((error) => {
-				setIsLoaded(true)
+				setIsLoaded(false)
 			})
-	}, [])
+	}, [isLoaded])
 
 	if (!isLoaded){
 		return (<Grid container><Grid item><CircularProgress /></Grid></Grid>)
@@ -26,7 +26,7 @@ export default function PostList(){
 		return (
 			<Grid container spacing={5} >
 				{
-					posts.map((post) => {
+					posts?.map((post) => {
 						return (
 							<Grid item key={post.id} xs={12}>
 								<Card
