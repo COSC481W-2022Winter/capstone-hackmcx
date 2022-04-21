@@ -4,7 +4,6 @@ import Button from '@material-ui/core/Button';
 import Grid from '@material-ui/core/Grid';
 import axios from 'axios';
 import { useState } from 'react';
-import {Link, useHistory} from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 import { styled } from '@mui/material/styles';
 
@@ -14,7 +13,7 @@ const CreatePost = () => {
 	const nav = useNavigate();
 	const [title, setTitle] = useState('');
 	const [titleHelper, setTitleHelper] = useState('Please enter a valid title.');
-	const [uploadHelper, setUploadHelper] = useState('No image selected');
+	const [uploadHelper, setUploadHelper] = useState('No image selected. Please select a jpg or png file less than 1MB in size.');
 	const [uploadError, setUploadError] = useState(true);
 	const [titleError, setTitleError] = useState(true);
 	const [selectedFile, setSelectedFile] = useState(false);

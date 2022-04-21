@@ -89,7 +89,7 @@ function SimpleModal(props) {
 	];
 	const [title, setTitle] = useState('');
 	const [titleHelper, setTitleHelper] = useState('Please enter a valid title.');
-	const [uploadHelper, setUploadHelper] = useState('No image selected');
+	const [uploadHelper, setUploadHelper] = useState('No image selected. Please select a jpg or png file less than 1MB in size.');
 	const [uploadError, setUploadError] = useState(true);
 	const [titleError, setTitleError] = useState(true);
 	const [selectedFile, setSelectedFile] = useState(false);
