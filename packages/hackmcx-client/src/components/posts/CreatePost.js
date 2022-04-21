@@ -1,18 +1,11 @@
 import TextField from '@material-ui/core/TextField';
 import ImageIcon from '@mui/icons-material/Image';
-import FileUploadIcon from '@mui/icons-material/FileUpload';
 import Button from '@material-ui/core/Button';
 import Grid from '@material-ui/core/Grid';
-import Typography from '@mui/material/Typography';
-import LinkIcon from '@mui/icons-material/Link';
 import axios from 'axios';
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import {Link, useHistory} from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
-import { FormControl } from '@material-ui/core';
-import IconButton from '@mui/material/IconButton';
-import PhotoCamera from '@mui/icons-material/PhotoCamera';
-import Stack from '@mui/material/Stack';
 import { styled } from '@mui/material/styles';
 
 var B64;
@@ -91,10 +84,13 @@ const CreatePost = () => {
 
 		console.log(this.state.selectedFile);
 	}
-
 	function postRequest(B64,extraChar) {
 		if (selectedFile.type == 'image/png') {
 			B64 = extraChar + B64.slice(0, B64.length - 2);
+		}
+		if (B64.length >= 1333336){
+			alert('Image size must be less than or equal to 1 mb!');
+			return;
 		}
 		axios
 				.post(
@@ -109,13 +105,12 @@ const CreatePost = () => {
 					(response) => {
 						console.log(response);
 						setTitleError(false);
+						nav('/')
 					},
 					(error) => {
 						if (error == 'Error: Request failed with status code 401') {
 							alert('Unauthorized action, redirecting you to the Log in Page');
 							nav(`/login`);
-						} else if (B64.length >= 1333336) {
-							alert('Image size must be less than or equal to 1 mb!');
 						} else {
 							alert('Post could not be created!');
 						}
@@ -194,8 +189,7 @@ const CreatePost = () => {
 					color='secondary'
 					disabled={titleError || uploadError}
 					onClick={() => postRequest(B64,extraChar)}
-					component={Link}
-					to='/'>
+				>
 					Create Post
 				</Button>
 			</Grid>
