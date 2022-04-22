@@ -112,7 +112,7 @@ const CreateAccount = () => {
 				},
 				(error) => {
 					console.log(error);
-					alert("could not create user");
+					alert(error.response.data.error);
 				}
 			);
 	}

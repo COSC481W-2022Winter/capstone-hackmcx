@@ -223,6 +223,10 @@ function SimpleModal(props) {
 			localStorage.getItem('authToken') != null &&
 			localStorage.getItem('tokenExpires') > Date.now()
 		) {
+			let preview = null;
+			if(selectedFile){
+				preview = <center><img src={selectedFile && URL.createObjectURL(selectedFile)}height="125" width="125"/></center>
+			}
 			return modalData ? (
 				<Modal
 					aria-labelledby='simple-modal-title'
@@ -335,6 +339,7 @@ function SimpleModal(props) {
 										color='secondary'>
 										Upload Image
 									</Button>
+									{preview}
 									{selectedFile.name}
 									{uploadHelper}
 								</label>
@@ -419,6 +424,7 @@ function SimpleModal(props) {
           handleOpen(index);
         }}
       >
+
         Change Profile Picture 
       </Button> */}
 
