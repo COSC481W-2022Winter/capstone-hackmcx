@@ -42,8 +42,8 @@ export async function postUser(req, res){
     }
 
     try{
-        if ((await dbClient.count().from('users').where('username', req.body.username)) > 0){
-            sendClientError(res, "user already exists!")
+        if((await dbClient.from('users').where('username', req.body.username)).length > 0){
+            sendClientError(res, "Username has already been taken!")
             return
         }
 
