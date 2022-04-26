@@ -47,40 +47,6 @@ function SimpleModal(props) {
 	const [modalData, setData] = useState();
 	const navigate = useNavigate();
 
-	const {
-		register,
-		handleSubmit,
-		watch,
-		formState: { errors },
-	} = useForm();
-	//const onSubmit = data => console.log(data);
-	const onSubmit = async (data) => {
-		// if (selectedFile.type == 'image/png') {
-		// 	B64 = extraChar + B64.slice(0, B64.length - 2);
-		// }
-		if (B64.length >= 1333336) {
-			alert('Image size must be less than or equal to 1 mb!');
-		}
-
-		const requestOptions = {
-			method: 'PUT',
-			headers: {
-				'Content-Type': 'application/json',
-				Authorization: 'Bearer ' + localStorage.getItem('authToken') + '',
-			},
-			body: JSON.stringify(data),
-		};
-		const response = await fetch(
-			`${process.env.REACT_APP_API_URL}/api/v1/users/${props.user.username}`,
-			requestOptions
-		);
-		const jsonData = await response.status;
-
-		console.log(jsonData);
-		window.location.href = window.location.href;
-		navigate(`/user/${props.user.username}`);
-	};
-
 	const data = [
 		{
 			title: 'Update Account Information',
@@ -97,6 +63,44 @@ function SimpleModal(props) {
 	const [firstName, setFirstName] = useState('');
 	const [lastName, setLastName] = useState('');
 
+	const {
+		register,
+		handleSubmit,
+		watch,
+		formState: { errors },
+	} = useForm();
+	//const onSubmit = data => console.log(data);
+	const onSubmit = async (data) => {
+		// if (selectedFile.type == 'image/png') {
+		// 	B64 = extraChar + B64.slice(0, B64.length - 2);
+		// }
+		if (B64.length >= 1333336) {
+			alert('Image size must be less than or equal to 1 mb!');
+		}
+
+		const obj = {};
+		obj.firstname = data.firstname;
+		obj.lastname = data.lastname;
+		obj.imageData = B64;
+
+		const requestOptions = {
+			method: 'PUT',
+			headers: {
+				'Content-Type': 'application/json',
+				Authorization: 'Bearer ' + localStorage.getItem('authToken') + '',
+			},
+			body: JSON.stringify(obj),
+		};
+		const response = await fetch(
+			`${process.env.REACT_APP_API_URL}/api/v1/users/${props.user.username}`,
+			requestOptions
+		);
+		const jsonData = await response.status;
+
+		console.log(jsonData);
+		window.location.href = window.location.href;
+		navigate(`/user/${props.user.username}`);
+	};
 	//////////////////////////SPRINT 4 CODE//////////////////////////////////
 
 	///////////////////////////POST REQUEST CODE ////////////////////
@@ -166,6 +170,7 @@ function SimpleModal(props) {
 				obj.lastname = `${props.user.last_name}`;
 				obj.imageData = B64;
 
+				/*
 				const requestOptions = {
 					method: 'PUT',
 					headers: {
@@ -182,8 +187,10 @@ function SimpleModal(props) {
 				const jsonData = response.status;
 
 				console.log('FORMIMAHE' + jsonData);
+				*/
 			});
 			asyncCall(e.target.files[0]);
+			
 		} else {
 			setUploadError(true);
 			setUploadError('No image selected');
